@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#060913">
-<title>Game Rush — Play, Laugh & Earn</title>
+<title>Game Rush — Play & Earn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Monetag SDK: zone 12047649 -->
+<script src="https://libtl.com/sdk.js" data-zone="12047649" data-sdk="show_12047649"></script>
 
 <!-- Firebase Modular SDK -->
 <script type="module">
@@ -203,6 +205,248 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0
 .sheet{width:min(480px,100%);background:#0f172a;border:1px solid var(--border);border-radius:26px 26px 18px 18px;padding:22px 18px;max-height:88vh;overflow-y:auto}
 .sheetTitle{font-size:17px;font-weight:900;margin:0 0 8px}
 .sheet p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 16px}
+
+/* =========================================================
+   MINERUSH PROFESSIONAL UI LAYER
+   Visual-only refresh; existing IDs and game logic retained.
+   ========================================================= */
+:root{
+  --bg:#070b14;
+  --panel:#0d1422;
+  --card:#101b2c;
+  --border:rgba(148,163,184,.15);
+  --text:#f4f7fb;
+  --muted:#91a0b8;
+  --primary:#7667ff;
+  --primary-glow:rgba(118,103,255,.22);
+  --cyan:#43d9e8;
+  --green:#2bd6a0;
+  --green-glow:rgba(43,214,160,.18);
+  --gold:#ffc765;
+  --danger:#ff657a;
+  --danger-glow:rgba(255,101,122,.18);
+}
+html,body{
+  background:#070b14;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.01em;
+}
+body{
+  background:
+    radial-gradient(ellipse at 50% -12%,rgba(118,103,255,.17),transparent 42%),
+    #070b14;
+}
+.app{
+  max-width:480px;
+  background:
+    radial-gradient(ellipse at 90% 0%,rgba(67,217,232,.055),transparent 32%),
+    linear-gradient(180deg,#080d18 0%,#070b14 70%);
+  padding-bottom:calc(92px + env(safe-area-inset-bottom));
+}
+.top{
+  padding:15px 18px 13px;
+  background:rgba(7,11,20,.88);
+  border-bottom:1px solid rgba(148,163,184,.12);
+  box-shadow:0 8px 26px rgba(0,0,0,.12);
+}
+.brandLeft{gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:15px;
+  background:linear-gradient(145deg,#8c7bff 0%,#5a50e8 48%,#35d8de 100%);
+  box-shadow:0 8px 24px rgba(118,103,255,.28),inset 0 1px rgba(255,255,255,.35);
+  border:1px solid rgba(255,255,255,.15);
+}
+.brand h1{font-size:19px;letter-spacing:-.45px}
+.brand small{display:block;margin-top:3px;font-size:10px;color:#91a0b8}
+.iconBtn{
+  border-radius:14px;background:#111b2d;border-color:rgba(148,163,184,.16);
+  box-shadow:inset 0 1px rgba(255,255,255,.035);
+}
+.screen{padding:17px 16px 24px;animation:fade .22s ease-out}
+.walletMaster{
+  border:1px solid rgba(133,122,255,.30);
+  border-radius:25px;padding:22px 19px 18px;
+  background:
+    radial-gradient(ellipse at 95% 5%,rgba(67,217,232,.15),transparent 38%),
+    radial-gradient(ellipse at 0% 100%,rgba(118,103,255,.15),transparent 48%),
+    linear-gradient(145deg,#151e35,#0d1423 78%);
+  box-shadow:0 18px 44px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.055);
+}
+.balanceLabel{color:#b8c1ff;letter-spacing:1px;font-size:10px}
+.syncPill{
+  border-radius:99px;background:rgba(67,217,232,.09);color:var(--cyan);
+  border:1px solid rgba(67,217,232,.22);padding:5px 9px;font-size:10px;
+}
+.bigCoins{font-size:clamp(32px,8vw,40px);letter-spacing:-1.5px;margin:10px 0 3px}
+.bigCoins span{font-size:12px;letter-spacing:1px;color:var(--gold)}
+.proStats{gap:9px;margin-top:19px}
+.pStat{
+  border-radius:16px;padding:12px 13px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(148,163,184,.12);
+}
+.pStat .val{font-size:16px;letter-spacing:-.25px}
+.pStat .lbl{font-size:10px;line-height:1.4;color:#91a0b8}
+.sectionHead{margin:24px 2px 12px}
+.sectionHead h2{font-size:15px;letter-spacing:-.2px}
+.sectionHead span{font-size:10px}
+.card{
+  border-radius:21px;padding:16px;
+  background:linear-gradient(145deg,rgba(18,29,47,.98),rgba(13,21,36,.98));
+  border:1px solid rgba(148,163,184,.14);
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+}
+.grid2{gap:10px}
+.actionTile{
+  min-height:88px;padding:13px 12px;gap:10px;
+  border-radius:19px;background:linear-gradient(145deg,#121e32,#0d1525);
+  border:1px solid rgba(148,163,184,.15);box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.actionTile .iconWrap{
+  flex:0 0 40px;width:40px;height:40px;border-radius:14px;
+  background:rgba(118,103,255,.15);font-size:19px;
+}
+.actionTile b{font-size:12px;letter-spacing:-.15px}
+.actionTile small{display:block;line-height:1.4;margin-top:4px;font-size:9.5px}
+.gameTabs{
+  background:#0b1220;border:1px solid rgba(148,163,184,.15);
+  border-radius:17px;padding:5px;margin-bottom:15px;
+}
+.gTabBtn{border-radius:12px;padding:11px 8px;font-size:11px}
+.gTabBtn.active{
+  background:linear-gradient(135deg,#8274ff,#5b52e8);
+  box-shadow:0 5px 16px rgba(118,103,255,.22);
+}
+.minesHeroCard{
+  border-radius:21px;padding:16px;
+  background:radial-gradient(ellipse at 100% 0%,rgba(255,101,122,.12),transparent 45%),#111a2a;
+  border:1px solid rgba(255,101,122,.20);
+}
+.minesBoard{
+  gap:7px;padding:10px;border-radius:21px;
+  background:#090f1b;border:1px solid rgba(148,163,184,.13);
+  box-shadow:inset 0 5px 18px rgba(0,0,0,.28);
+}
+.mTile{
+  border-radius:13px;background:linear-gradient(145deg,#17263d,#101a2b);
+  border:1px solid #25344d;box-shadow:0 3px 8px rgba(0,0,0,.18);
+}
+.mTile:hover:not(.revealed):not(.disabled){background:#223450;border-color:var(--cyan)}
+.minesStatusBar,.minesControls,.levelProgressBox{
+  background:#0d1524;border:1px solid rgba(148,163,184,.13);border-radius:18px;
+}
+.minesControls{padding:14px}
+.levelMap{gap:8px}
+.levelBtn{border-radius:13px;background:#101a2b;border-color:rgba(148,163,184,.14)}
+.levelBtn.open{background:linear-gradient(145deg,#393879,#1a2440);border-color:#8174ff}
+.levelBtn.done{background:linear-gradient(145deg,#104c42,#102b2c);border-color:#2bd6a0}
+.creatorBanner{
+  border-radius:19px;background:linear-gradient(130deg,rgba(255,199,101,.11),#101827 65%);
+  border-color:rgba(255,199,101,.2);padding:15px;
+}
+.qCard{
+  border-radius:24px;padding:23px 18px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(118,103,255,.14),transparent 60%),linear-gradient(145deg,#131e33,#0d1524);
+  border-color:rgba(118,103,255,.22);
+}
+.qText{font-size:17px;line-height:1.5;letter-spacing:-.2px}
+.optionsGrid{gap:10px;margin-top:13px}
+.optBtn{
+  border-radius:16px;padding:15px;
+  background:#101a2b;border-color:rgba(148,163,184,.15);
+  font-size:12.5px;min-height:51px;
+}
+.optBtn:focus-visible,.btn:focus-visible,.nav:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.btn{
+  min-height:47px;border-radius:15px;
+  background:linear-gradient(135deg,#8274ff,#5b52e8);
+  box-shadow:0 8px 20px rgba(118,103,255,.19);
+  font-size:12px;letter-spacing:.15px;
+}
+.btn.green{background:linear-gradient(135deg,#35dca7,#13ae83);box-shadow:0 8px 20px rgba(43,214,160,.14);color:#05241c}
+.btn.gold{background:linear-gradient(135deg,#ffd27b,#f0a83d);box-shadow:0 8px 20px rgba(255,199,101,.12);color:#2c1b05}
+.btn.danger{background:linear-gradient(135deg,#ff7788,#e84762)}
+.btn.secondary{background:#172237;border:1px solid rgba(148,163,184,.17);box-shadow:none}
+.btn.small{min-height:34px;border-radius:11px;padding:8px 12px}
+.inputGroup{margin-top:14px}
+.inputGroup label{font-size:10px;letter-spacing:.75px}
+input,textarea,select{
+  border-radius:14px;background:#090f1b;border:1px solid rgba(148,163,184,.18);
+  padding:13px 14px;font-size:13px;min-height:45px;
+}
+input:focus,textarea:focus,select:focus{border-color:#8174ff;box-shadow:0 0 0 3px rgba(118,103,255,.13)}
+.chip{border-radius:11px;background:#111d30;border-color:rgba(148,163,184,.14);padding:8px 10px}
+.historyCard{
+  border-radius:16px;background:#101a2b;border-color:rgba(148,163,184,.13);padding:14px;
+}
+.statusBadge{border-radius:99px}
+.bottom{
+  height:calc(72px + env(safe-area-inset-bottom));
+  padding:6px 7px calc(6px + env(safe-area-inset-bottom));
+  background:rgba(8,13,23,.94);border-top:1px solid rgba(148,163,184,.14);
+  box-shadow:0 -8px 28px rgba(0,0,0,.18);
+}
+.nav{border-radius:15px;font-size:19px;gap:4px}
+.nav span{font-size:9.5px;letter-spacing:.1px}
+.nav.active{color:#c2bcff;background:rgba(118,103,255,.13)}
+.toast{
+  bottom:calc(84px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);
+  white-space:normal;text-align:center;border-radius:14px;background:#142137;
+  border-color:rgba(148,163,184,.2);line-height:1.4;
+}
+.modal{padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
+.sheet{
+  border-radius:25px 25px 20px 20px;background:#101a2b;
+  border-color:rgba(148,163,184,.16);box-shadow:0 20px 60px rgba(0,0,0,.38);
+}
+.sheetTitle{letter-spacing:-.3px}
+.adminTabBtn{border-radius:11px}
+@media (max-width:360px){
+  .screen{padding-left:12px;padding-right:12px}
+  .walletMaster{padding:19px 15px 15px}
+  .actionTile{padding:11px 9px;gap:8px}
+  .actionTile .iconWrap{width:35px;height:35px;flex-basis:35px}
+  .actionTile b{font-size:11px}
+  .pStat{padding:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
+
+/* Premium arcade launcher + tactile 3D game polish */
+.gameShelfHead{display:flex;align-items:flex-start;justify-content:space-between;margin:5px 2px 14px;gap:10px}
+.gameShelfHead h2{font-size:22px;letter-spacing:-.7px;margin:4px 0 4px;font-weight:950}
+.gameShelfHead p{font-size:11px;color:var(--muted);margin:0;line-height:1.5}
+.eyebrow{font-size:9px;font-weight:900;letter-spacing:1.8px;color:#a5b4fc}
+.liveDot{font-size:9px;font-weight:900;color:#6ee7b7;background:#064e3b66;border:1px solid #10b98155;border-radius:99px;padding:6px 8px;white-space:nowrap}
+.gameLaunchGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+.gameLaunchCard{position:relative;isolation:isolate;overflow:hidden;min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start;padding:14px 12px 12px;min-height:202px;border-radius:22px;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 25px #0005,inset 0 1px 0 #ffffff18;transition:transform .18s,filter .18s}
+.gameLaunchCard:active{transform:scale(.975) translateY(1px);filter:brightness(1.15)}
+.gameLaunchCard:before{content:"";position:absolute;width:155px;height:155px;border-radius:50%;right:-65px;top:-60px;background:#ffffff0c;filter:blur(1px);z-index:-1}
+.bombLaunch{background:radial-gradient(ellipse at 85% 10%,#fb718533,transparent 45%),linear-gradient(145deg,#321b2a,#151629 66%,#101827);border-color:#fb718544}
+.mindLaunch{background:radial-gradient(ellipse at 85% 10%,#818cf833,transparent 48%),linear-gradient(145deg,#20235a,#151629 66%,#101827);border-color:#818cf844}
+.launchOrb{width:66px;height:66px;display:grid;place-items:center;border-radius:21px;margin:0 0 12px;transform:perspective(180px) rotateX(8deg) rotateY(-8deg);box-shadow:0 9px 0 #0004,0 15px 25px #0005,inset 0 2px 2px #ffffff45;font-size:34px}
+.launchOrb span{filter:drop-shadow(0 5px 3px #0006);transform:translateY(-2px)}
+.bombOrb{background:linear-gradient(145deg,#ff8a8a,#b91c1c 65%,#641b2d);border:1px solid #fecaca66}
+.mindOrb{background:linear-gradient(145deg,#c4b5fd,#6366f1 60%,#312e81);border:1px solid #ddd6fe66}
+.launchTag{font-size:8px;letter-spacing:1.1px;font-weight:950;color:#fda4af;margin-bottom:4px}
+.mindLaunch .launchTag{color:#c4b5fd}
+.gameLaunchCard strong{font-size:16px;font-weight:950;letter-spacing:-.4px;line-height:1.2}
+.gameLaunchCard small{font-size:10px;color:#b7c2d8;margin-top:5px;line-height:1.4;min-height:27px}
+.launchCta{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:auto;padding-top:10px;font-size:9px;letter-spacing:.8px;font-weight:950;color:#fff}
+.launchCta b{display:grid;place-items:center;width:24px;height:24px;border-radius:9px;background:#ffffff16;font-size:14px}
+.minesHeroCard{background:radial-gradient(ellipse at 85% 0%,#fb718533,transparent 52%),linear-gradient(145deg,#321b2a,#0f172a 72%);border-color:#fb718555;box-shadow:0 12px 24px #0004,inset 0 1px #ffffff18;min-height:94px}
+.minesBoard{gap:7px;padding:10px;background:linear-gradient(145deg,#070b16,#121c31);border-color:#33415f;box-shadow:inset 0 7px 22px #000a,0 10px 25px #0004;perspective:800px}
+.mTile{position:relative;overflow:hidden;border-radius:12px;background:linear-gradient(145deg,#2b3c5b 0%,#17243b 48%,#0b1324 100%);border:1px solid #405578;box-shadow:0 4px 0 #070b15,0 7px 10px #0006,inset 0 1px #ffffff20;font-size:clamp(20px,6vw,27px);text-shadow:0 3px 4px #0008}
+.mTile:before{content:"";position:absolute;inset:1px;border-radius:10px;background:linear-gradient(135deg,#ffffff0c,transparent 48%);pointer-events:none}
+.mTile:hover:not(.revealed):not(.disabled){background:linear-gradient(145deg,#385b83,#182d4a);border-color:#67e8f9;transform:translateY(-3px) rotateX(3deg);box-shadow:0 7px 0 #070b15,0 12px 15px #0008}
+.mTile.revealed.gem{background:radial-gradient(circle at 35% 25%,#6ee7b7,#059669 60%,#064e3b);box-shadow:0 3px 0 #064e3b,0 0 20px #10b98166,inset 0 1px #ffffff55}
+.mTile.revealed.mine{background:radial-gradient(circle at 35% 25%,#fca5a5,#dc2626 60%,#7f1d1d);box-shadow:0 3px 0 #450a0a,0 0 22px #ef444466,inset 0 1px #ffffff55}
+.levelBtn{box-shadow:0 4px 0 #080d1a,0 8px 12px #0004;transition:transform .15s,filter .15s}
+.levelBtn:active{transform:translateY(2px);box-shadow:0 2px 0 #080d1a}
+@media(max-width:360px){.gameLaunchCard{padding:11px 10px;min-height:190px}.launchOrb{width:58px;height:58px;font-size:30px}.gameLaunchCard strong{font-size:14px}.gameLaunchCard small{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -213,7 +457,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0
       <div class="brandLeft">
         <div class="logo">⚡</div>
         <div>
-          <h1>Game Rush</h1>
+          <h1>Mine Rush</h1>
           <small id="cloudStatus">🔥 Firebase: telegram-mini-bot-c5449</small>
         </div>
       </div>
@@ -226,7 +470,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0
     <section id="home" class="screen active">
       <div class="walletMaster">
         <div class="balanceLabel">
-          <span>Game Rush Balance</span>
+          <span>Mine Rush Balance</span>
           <div class="syncPill" id="userTelegramIdBadge">TG: Fetching...</div>
         </div>
         <div class="bigCoins" id="homeTotalCoins">0 <span>COINS</span></div>
@@ -278,7 +522,16 @@ input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0
 
     <!-- GAMES SCREEN (TABS: BOMB FINDER & MIND RUSH) -->
     <section id="games" class="screen">
-      <!-- Game Category Tabs -->
+      <div class="gameShelfHead"><div><span class="eyebrow">MINERUSH ARCADE</span><h2>Choose your game</h2><p>Play smart. Collect coins. Beat your best.</p></div><span class="liveDot">● LIVE</span></div>
+      <div class="gameLaunchGrid">
+        <button class="gameLaunchCard bombLaunch" onclick="switchGameTab('mines')">
+          <span class="launchOrb bombOrb"><span>💣</span></span><span class="launchTag">RISK & REWARD</span><strong>Bomb Finder</strong><small>Find gems. Avoid bombs.</small><span class="launchCta">PLAY NOW <b>↗</b></span>
+        </button>
+        <button class="gameLaunchCard mindLaunch" onclick="switchGameTab('mind')">
+          <span class="launchOrb mindOrb"><span>🧠</span></span><span class="launchTag">BRAIN CHALLENGE</span><strong>Mind Rush</strong><small>30 levels • Test your mind</small><span class="launchCta">PLAY NOW <b>↗</b></span>
+        </button>
+      </div>
+      <!-- Compact active-game switcher -->
       <div class="gameTabs">
         <button class="gTabBtn active" id="gtab_mines" onclick="switchGameTab('mines')">💣 Bomb Finder</button>
         <button class="gTabBtn" id="gtab_mind" onclick="switchGameTab('mind')">🧠 Mind Rush (30)</button>
@@ -1360,7 +1613,7 @@ function handleChoice(chosenIdx, btnEl) {
           </p>
         </div>
       `, `
-        ${currentLevel < 30 ? `<button class="btn green" onclick="closeModal(); startLevel(currentLevel + 1)">Next Level ➔</button>` : `<button class="btn green" onclick="closeModal(); go('games')">Levels Map</button>`}
+        ${currentLevel < 30 ? `<button class="btn green" onclick="continueToNextLevel()">Next Level ➔</button>` : `<button class="btn green" onclick="closeModal(); go('games')">Levels Map</button>`}
       `);
     }, 450);
 
@@ -1409,19 +1662,34 @@ function showGameOverModal(msg = "Dono chances khatam! Sahi option choose nahi h
   `);
 }
 
-function watchAdForChance() {
+async function watchAdForChance() {
   closeModal();
-  showToast('📺 Playing Rewarded Ad...');
-  setTimeout(() => {
-    levelAdReviveUsed = true;
-    currentLives = 1;
-    optionLocked = false;
-    timeLeft = 20;
-    updateHeartsUI();
-    startTimer();
-    SoundFX.startKBCSuspense();
-    showToast('❤️ 1 Chance Mil Gaya! Khel jaari rakhein.');
-  }, 1000);
+  if (typeof window.show_12047649 !== 'function') { showToast('Ad abhi load nahi hua. Thodi der baad try karein.'); return; }
+  showToast('📺 Ad load ho raha hai…');
+  try {
+    const result = await window.show_12047649({ type: 'end', requestVar: 'mind_rush_revive' });
+    if (!result || result.reward_event_type !== 'valued') { showToast('Is ad par reward confirm nahi hua. Aap level restart kar sakte hain.'); return; }
+    levelAdReviveUsed = true; currentLives = 1; optionLocked = false; timeLeft = 20;
+    updateHeartsUI(); startTimer(); SoundFX.startKBCSuspense();
+    showToast('❤️ Extra chance unlock ho gaya!');
+  } catch (err) { showToast('Ad available nahi hai. Aap bina ad ke level restart kar sakte hain.'); }
+}
+
+// Optional interstitial only at natural pauses: after every 3rd cleared level,
+// no more than once per 3 minutes. Never block game progress if an ad is unavailable.
+let lastMilestoneAdAt = 0;
+async function maybeShowMilestoneAd(completedLevel) {
+  const now = Date.now();
+  if (completedLevel % 3 !== 0 || now - lastMilestoneAdAt < 180000 || typeof window.show_12047649 !== 'function') return;
+  lastMilestoneAdAt = now;
+  try { await window.show_12047649({ type: 'end', requestVar: 'level_milestone_' + completedLevel }); } catch (e) { /* keep gameplay uninterrupted */ }
+}
+
+async function continueToNextLevel() {
+  const cleared = currentLevel;
+  closeModal();
+  await maybeShowMilestoneAd(cleared);
+  startLevel(Math.min(30, cleared + 1));
 }
 
 function confirmExitGame() {
@@ -1522,7 +1790,7 @@ function submitLevelIdea() {
    ===================================================================== */
 function openAdminPinModal() {
   SoundFX.tap();
-  modal('👑 Master Admin Access', `
+  modal('👑 Mine Rush Admin Access', `
     <div>
       <p style="font-size:12px;color:var(--muted)">Enter Admin PIN to open Control Suite:</p>
       <input type="password" id="adminPinInput" placeholder="Enter PIN (Default: 778899)" style="text-align:center;font-size:16px;letter-spacing:4px">
@@ -1546,7 +1814,7 @@ function verifyAdminPin() {
 }
 
 function openAdminDashboard() {
-  modal('👑 Game Rush Master Admin', `
+  modal('👑 Mine Rush Admin Console', `
     <div>
       <div class="adminTabRow">
         <button class="adminTabBtn active" id="atab_subs" onclick="switchAdminTab('subs')">📬 Submissions</button>
@@ -1854,7 +2122,7 @@ function processWithdrawal(androidUid, amount) {
   document.getElementById('amountInput').value = '';
   renderWallet();
   renderHome();
-  showToast('✅ Withdrawal request Firebase me submit ho gayi!');
+  showToast('Withdrawal request process hui. Status Wallet history mein check karein.');
 }
 
 function renderHistory() {
