@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#060913">
+<title>Game Rush — Play, Laugh & Earn</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Firebase Modular SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, get, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhvOGsQs0i3lmuPrxmjDUWJaD3wUN_Cak",
+    authDomain: "telegram-mini-bot-c5449.firebaseapp.com",
+    databaseURL: "https://telegram-mini-bot-c5449-default-rtdb.firebaseio.com",
+    projectId: "telegram-mini-bot-c5449",
+    storageBucket: "telegram-mini-bot-c5449.firebasestorage.app",
+    messagingSenderId: "28692089044",
+    appId: "1:28692089044:web:66fd04fe68260c34fe1341",
+    measurementId: "G-RRBL8GCTL1"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const fbDb = getDatabase(fbApp);
+  let fbAnalytics = null;
+  try { fbAnalytics = getAnalytics(fbApp); } catch(e){}
+
+  window.fbDb = fbDb;
+  window.dbRef = ref;
+  window.dbSet = set;
+  window.dbGet = get;
+  window.dbUpdate = update;
+  window.dbPush = push;
+  window.dbRemove = remove;
+  window.firebaseReady = true;
+
+  if (window.initCloudSync) window.initCloudSync();
+</script>
+
+<style>
+:root{
+  --bg:#060913;--panel:#0d1322;--card:#121a2f;--border:#1e2942;
+  --text:#f8fafc;--muted:#7c8ba7;--primary:#6366f1;--primary-glow:rgba(99,102,241,0.25);
+  --cyan:#06b6d4;--green:#10b981;--green-glow:rgba(16,185,129,0.2);
+  --gold:#f59e0b;--danger:#ef4444;--danger-glow:rgba(239,68,68,0.25);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+body{min-height:100vh;overflow-x:hidden}
+button,input,textarea,select{font:inherit}
+button{border:0;color:inherit;cursor:pointer}
+.app{max-width:480px;margin:auto;min-height:100vh;background:
+  radial-gradient(circle at 85% 0%,rgba(99,102,241,.18),transparent 38%),
+  radial-gradient(circle at 10% 45%,rgba(6,182,212,.08),transparent 32%),var(--bg);
+  padding-bottom:90px}
+.top{padding:14px 18px 10px;position:sticky;top:0;z-index:30;background:rgba(6,9,19,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.brandLeft{display:flex;gap:11px;align-items:center}
+.logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#6366f1,#06b6d4);display:grid;place-items:center;font-size:22px;box-shadow:0 8px 22px var(--primary-glow)}
+.brand h1{font-size:18px;margin:0;font-weight:900;letter-spacing:.3px}.brand small{color:var(--muted);font-size:10.5px;font-weight:600}
+.iconBtn{width:38px;height:38px;border-radius:12px;background:var(--panel);border:1px solid var(--border);display:grid;place-items:center;font-size:16px}
+.screen{display:none;padding:14px 16px 20px;animation:fade .2s ease-in-out}.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Wallet Master Card */
+.walletMaster{
+  border:1px solid rgba(99,102,241,.32);border-radius:24px;padding:22px 18px 18px;
+  background:linear-gradient(145deg,rgba(99,102,241,.18),rgba(6,182,212,.05) 55%,rgba(18,26,47,.9)),var(--panel);
+  box-shadow:0 18px 45px rgba(0,0,0,.45);position:relative;overflow:hidden
+}
+.balanceLabel{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#a5b4fc;display:flex;align-items:center;justify-content:space-between}
+.syncPill{background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.28);padding:3px 9px;border-radius:99px;font-size:10.5px;font-weight:800}
+.bigCoins{font-size:36px;font-weight:900;letter-spacing:-1px;margin:6px 0 2px;color:#fff}
+.bigCoins span{font-size:15px;color:var(--gold);margin-left:4px;font-weight:750}
+.proStats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.pStat{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:15px;padding:11px 13px}
+.pStat .val{font-size:16px;font-weight:850;color:#fff}.pStat .lbl{font-size:10px;color:var(--muted);margin-top:2px;font-weight:600}
+
+.sectionHead{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 10px}
+.sectionHead h2{font-size:15px;margin:0;font-weight:800;letter-spacing:.2px}.sectionHead span{font-size:11px;color:var(--muted);font-weight:600}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px}
+
+/* Quick Hub */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.actionTile{display:flex;align-items:center;gap:12px;padding:15px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);cursor:pointer;transition:.15s}
+.actionTile:active{transform:scale(.98)}
+.actionTile .iconWrap{width:42px;height:42px;border-radius:14px;background:rgba(99,102,241,.14);display:grid;place-items:center;font-size:20px}
+.actionTile b{display:block;font-size:13px;font-weight:800}.actionTile small{color:var(--muted);font-size:10px}
+
+/* Game Category Switcher Tab */
+.gameTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#0b1120;padding:5px;border-radius:16px;border:1px solid var(--border);margin-bottom:14px}
+.gTabBtn{padding:10px 14px;border-radius:12px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);transition:.2s}
+.gTabBtn.active{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 4px 15px var(--primary-glow)}
+
+/* =========================================================
+   💣 BOMB FINDER (MINES) CASINO STYLES
+   ========================================================= */
+.minesHeroCard{
+  background:linear-gradient(145deg,rgba(239,68,68,.12),#0f172a 65%);border:1px solid rgba(239,68,68,.3);
+  border-radius:20px;padding:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between
+}
+.minesBoard{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;aspect-ratio:1;
+  background:#090f1e;padding:12px;border-radius:20px;border:1px solid var(--border);margin-bottom:14px;box-shadow:inset 0 4px 20px rgba(0,0,0,.6)
+}
+.mTile{
+  aspect-ratio:1;border-radius:14px;background:linear-gradient(145deg,#162138,#0d1527);
+  border:1px solid #233152;display:grid;place-items:center;font-size:24px;cursor:pointer;
+  transition:all .18s cubic-bezier(0.4, 0, 0.2, 1);user-select:none;box-shadow:0 4px 10px rgba(0,0,0,.3)
+}
+.mTile:hover:not(.revealed):not(.disabled){background:#1f2e4d;border-color:var(--cyan);transform:translateY(-2px)}
+.mTile:active:not(.revealed):not(.disabled){transform:scale(.95)}
+.mTile.revealed.gem{background:radial-gradient(circle,#059669,#064e3b);border-color:#10b981;box-shadow:0 0 18px var(--green-glow);animation:popGem .25s ease-out}
+.mTile.revealed.mine{background:radial-gradient(circle,#dc2626,#7f1d1d);border-color:#ef4444;box-shadow:0 0 22px var(--danger-glow);animation:shakeTile .3s}
+.mTile.ghost{opacity:.35;pointer-events:none}
+@keyframes popGem{0%{transform:scale(.3) rotate(-15deg)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shakeTile{0%,100%{transform:translate(0)}25%{transform:translate(-5px, 2px)}75%{transform:translate(5px, -2px)}}
+
+.minesControls{background:#0e1629;border:1px solid var(--border);border-radius:18px;padding:14px}
+.minesStatusBar{display:flex;justify-content:space-between;align-items:center;background:#090e1b;padding:10px 14px;border-radius:14px;border:1px solid var(--border);margin-bottom:12px}
+
+/* Level Grid */
+.levelProgressBox{background:#0c1221;border:1px solid var(--border);border-radius:16px;padding:13px;margin-bottom:14px}
+.progressBar{height:8px;background:#18233c;border-radius:99px;overflow:hidden;margin-top:8px}
+.progressBar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--cyan));border-radius:99px}
+.levelMap{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:360px;overflow-y:auto;padding-right:4px}
+.levelBtn{aspect-ratio:1;border-radius:14px;border:1px solid var(--border);background:#0e1628;display:grid;place-items:center;font-weight:900;font-size:13px;position:relative}
+.levelBtn:active{transform:scale(.95)}
+.levelBtn.open{background:linear-gradient(145deg,#243265,#141d38);border-color:#5c6fdd;box-shadow:0 6px 18px var(--primary-glow)}
+.levelBtn.done{background:linear-gradient(145deg,#0c3f35,#0c2323);border-color:#10b981;color:#34d399}
+.levelBtn.lock{opacity:.4;border-color:transparent}
+
+/* Creator Banner */
+.creatorBanner{background:linear-gradient(135deg,rgba(245,158,11,.15),#10172a 60%);border:1px solid rgba(245,158,11,.3);border-radius:18px;padding:14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+
+/* Mind Game Play Arena */
+.gameHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.livesRow{display:flex;gap:4px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);padding:5px 10px;border-radius:99px}
+.heart{font-size:14px;transition:.2s}.heart.lost{filter:grayscale(1);opacity:.25}
+.timerBadge{background:#182239;border:1px solid var(--border);padding:6px 12px;border-radius:12px;font-weight:900;font-size:13px;color:var(--gold)}
+.closeGameBtn{width:36px;height:36px;border-radius:12px;background:#161f36;border:1px solid var(--border);display:grid;place-items:center;font-size:15px;color:var(--muted)}
+.closeGameBtn:active{color:#fff;border-color:var(--danger)}
+
+.qCard{background:linear-gradient(145deg,#131c33,#0d1424);border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:22px 18px;text-align:center;position:relative}
+.qBadge{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;justify-content:center;gap:6px}
+.kbcPulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger);animation:pulse 1s infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:.4}100%{transform:scale(1);opacity:1}}
+.qText{font-size:17px;font-weight:850;line-height:1.45;margin:12px 0 6px}
+.qMood{display:inline-block;font-size:10px;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.05);color:var(--gold);font-weight:750}
+
+.optionsGrid{display:grid;gap:10px;margin-top:14px}
+.optBtn{padding:14px 16px;border-radius:16px;background:#0f182c;border:1px solid var(--border);text-align:left;font-weight:750;font-size:13px;line-height:1.35;display:flex;align-items:center;justify-content:space-between;transition:.15s}
+.optBtn:active{transform:scale(.98)}
+.optBtn.wrong{border-color:var(--danger);background:rgba(239,68,68,.14);color:#fca5a5}
+.optBtn.correct{border-color:var(--green);background:rgba(16,185,129,.16);color:#86efac}
+.optBtn.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.btn{background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:15px;padding:13px 18px;font-weight:800;width:100%;box-shadow:0 8px 24px var(--primary-glow);font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn.green{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 8px 24px var(--green-glow)}
+.btn.gold{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 8px 24px rgba(245,158,11,0.25);color:#fff}
+.btn.danger{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:none}
+.btn.secondary{background:#151e33;border:1px solid var(--border);box-shadow:none}
+.btn.small{width:auto;padding:8px 12px;font-size:11px}
+
+/* Inputs & Form */
+.inputGroup{margin-top:12px}
+.inputGroup label{display:block;font-size:10.5px;color:var(--muted);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+input,textarea,select{width:100%;background:#090f1d;border:1px solid var(--border);color:#fff;border-radius:14px;padding:12px 14px;font-size:13px;outline:none;transition:.2s}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.quickRow{display:flex;gap:6px;margin-top:8px}
+.chip{background:#0e172a;border:1px solid var(--border);padding:6px 10px;border-radius:10px;font-size:10.5px;font-weight:750;color:var(--muted)}
+.chip:active{border-color:var(--primary);color:#fff}
+
+.historyList{display:grid;gap:9px;margin-top:12px}
+.historyCard{background:#0d1424;border:1px solid var(--border);border-radius:15px;padding:13px;display:flex;justify-content:space-between;align-items:center}
+.historyCard b{font-size:13px;display:block}
+.historyCard small{font-size:10px;color:var(--muted);display:block;margin-top:3px}
+.statusBadge{font-size:10px;font-weight:800;padding:4px 9px;border-radius:99px}
+.statusBadge.Pending{background:rgba(245,158,11,.12);color:var(--gold);border:1px solid rgba(245,158,11,.25)}
+.statusBadge.Approved{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.statusBadge.Rejected{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.25)}
+
+/* Bottom Nav */
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);height:72px;background:rgba(99,14,26,.0);background:rgba(9,14,26,.95);backdrop-filter:blur(18px);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);z-index:50;padding:6px 6px env(safe-area-inset-bottom)}
+.nav{background:transparent;color:var(--muted);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:18px}
+.nav span{font-size:9.5px;font-weight:800}.nav.active{color:#a5b4fc;background:rgba(99,102,241,.12)}
+
+/* Admin Tabs */
+.adminTabRow{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.adminTabBtn{padding:8px 12px;border-radius:12px;background:#0d1527;border:1px solid var(--border);font-size:11px;font-weight:800;white-space:nowrap;color:var(--muted)}
+.adminTabBtn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Modal & Toast */
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(10px);background:#131d33;border:1px solid #2a3959;padding:11px 18px;border-radius:14px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:.22s;z-index:100;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(2,5,12,.82);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;z-index:90;padding:12px}
+.modal.show{display:flex}
+.sheet{width:min(480px,100%);background:#0f172a;border:1px solid var(--border);border-radius:26px 26px 18px 18px;padding:22px 18px;max-height:88vh;overflow-y:auto}
+.sheetTitle{font-size:17px;font-weight:900;margin:0 0 8px}
+.sheet p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 16px}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="brandLeft">
+        <div class="logo">⚡</div>
+        <div>
+          <h1>Game Rush</h1>
+          <small id="cloudStatus">🔥 Firebase: telegram-mini-bot-c5449</small>
+        </div>
+      </div>
+      <button class="iconBtn" onclick="toggleSound()" id="soundToggleBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME SCREEN -->
+    <section id="home" class="screen active">
+      <div class="walletMaster">
+        <div class="balanceLabel">
+          <span>Game Rush Balance</span>
+          <div class="syncPill" id="userTelegramIdBadge">TG: Fetching...</div>
+        </div>
+        <div class="bigCoins" id="homeTotalCoins">0 <span>COINS</span></div>
+
+        <div class="proStats">
+          <div class="pStat">
+            <div class="val" id="homeTodayEarned">0</div>
+            <div class="lbl">⚡ Today Earned</div>
+          </div>
+          <div class="pStat">
+            <div class="val" id="homeTodayWithdrawn">0</div>
+            <div class="lbl">💸 Today Withdrawn</div>
+          </div>
+          <div class="pStat">
+            <div class="val" id="homeTotalWithdrawn">0</div>
+            <div class="lbl">🏦 Total Withdrawn</div>
+          </div>
+          <div class="pStat">
+            <div class="val" id="homeLevelUnlocked">Stage 1</div>
+            <div class="lbl">🧠 Brain Rank</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionHead"><h2>Quick Hub</h2><span>Play Games</span></div>
+      <div class="grid2">
+        <div class="actionTile" onclick="go('games'); switchGameTab('mines');">
+          <div class="iconWrap" style="background:rgba(239,68,68,.16);color:var(--danger)">💣</div>
+          <div><b>Bomb Finder</b><small>Stake-Style Mines</small></div>
+        </div>
+        <div class="actionTile" onclick="go('games'); switchGameTab('mind');">
+          <div class="iconWrap">🧠</div>
+          <div><b>Mind Rush</b><small>30 Funny Levels</small></div>
+        </div>
+      </div>
+
+      <!-- Featured Bomb Finder Banner -->
+      <div class="sectionHead"><h2>Featured Game</h2><span>High Multiplier</span></div>
+      <div class="card" style="background:linear-gradient(135deg,rgba(239,68,68,.15),#0f172a 65%);border:1px solid rgba(239,68,68,.3);cursor:pointer;border-radius:20px;padding:18px" onclick="go('games'); switchGameTab('mines');">
+        <span class="syncPill" style="float:right;background:rgba(239,68,68,.15);color:var(--danger);border-color:rgba(239,68,68,.3)">CASHOUT 💎</span>
+        <div style="font-size:32px;margin-bottom:8px">💣💎</div>
+        <h3 style="margin:0 0 6px;font-size:16px;font-weight:850">Bomb Finder (Mines Arena)</h3>
+        <p style="margin:0;font-size:11.5px;color:var(--muted);line-height:1.45">
+          Apne coins lagayein, bomb quantity select karein aur live cashout karein!
+        </p>
+        <button class="btn small danger" style="margin-top:14px">PLAY MINES NOW ➔</button>
+      </div>
+    </section>
+
+    <!-- GAMES SCREEN (TABS: BOMB FINDER & MIND RUSH) -->
+    <section id="games" class="screen">
+      <!-- Game Category Tabs -->
+      <div class="gameTabs">
+        <button class="gTabBtn active" id="gtab_mines" onclick="switchGameTab('mines')">💣 Bomb Finder</button>
+        <button class="gTabBtn" id="gtab_mind" onclick="switchGameTab('mind')">🧠 Mind Rush (30)</button>
+      </div>
+
+      <!-- VIEW 1: BOMB FINDER (MINES CASINO GAME) -->
+      <div id="viewMinesGame">
+        <div class="minesHeroCard">
+          <div>
+            <b style="font-size:14px;display:block">💣 Bomb Finder Arena</b>
+            <small style="color:var(--muted);font-size:11px">Dhoondo Diamonds 💎 • Bacho Bombs se 💣</small>
+          </div>
+          <div id="minesActiveBadge" class="syncPill" style="background:rgba(16,185,129,.15);color:var(--green);border-color:rgba(16,185,129,.3)">READY</div>
+        </div>
+
+        <!-- 5x5 Mines Board -->
+        <div class="minesBoard" id="minesGrid"></div>
+
+        <!-- Status Multiplier Bar -->
+        <div class="minesStatusBar">
+          <div>
+            <small style="color:var(--muted);font-size:10px;display:block">CURRENT MULTIPLIER</small>
+            <b id="minesCurrentMult" style="color:var(--gold);font-size:16px">1.00x</b>
+          </div>
+          <div style="text-align:right">
+            <small style="color:var(--muted);font-size:10px;display:block">CASHOUT PROFIT</small>
+            <b id="minesPotentialWin" style="color:var(--green);font-size:16px">0 Coins</b>
+          </div>
+        </div>
+
+        <!-- Bet Controls -->
+        <div class="minesControls">
+          <div class="inputGroup">
+            <div style="display:flex;justify-content:space-between">
+              <label>Bet Amount (Coins)</label>
+              <span id="minesBalanceInfo" style="font-size:10.5px;color:var(--cyan)">Balance: 0</span>
+            </div>
+            <input type="number" id="minesBetAmount" min="10" value="50" placeholder="Coins to bet">
+            <div class="quickRow">
+              <button class="chip" onclick="setMinesBet('half')">½ Half</button>
+              <button class="chip" onclick="setMinesBet('double')">2X Double</button>
+              <button class="chip" onclick="setMinesBet('100')">100</button>
+              <button class="chip" onclick="setMinesBet('max')" style="color:var(--cyan)">MAX</button>
+            </div>
+          </div>
+
+          <div class="inputGroup">
+            <label>Bomb Quantity (Mines Count)</label>
+            <select id="minesCountSelect" onchange="SoundFX.tap()">
+              <option value="1">1 Bomb (Low Risk • 24 Gems)</option>
+              <option value="2">2 Bombs</option>
+              <option value="3" selected>3 Bombs (Recommended)</option>
+              <option value="5">5 Bombs (Medium Risk)</option>
+              <option value="10">10 Bombs (High Multiplier)</option>
+              <option value="15">15 Bombs (Extreme Reward)</option>
+              <option value="20">20 Bombs (Insane Risk 🔥)</option>
+            </select>
+          </div>
+
+          <!-- Action Button: Start or Cashout -->
+          <div style="margin-top:14px" id="minesActionContainer">
+            <button class="btn green" id="btnStartMines" onclick="startMinesGame()">START GAME 🚀</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: MIND RUSH (30 LEVELS QUIZ) -->
+      <div id="viewMindRush" style="display:none">
+        <div class="creatorBanner">
+          <div>
+            <b style="font-size:13px;display:block">💡 Apna Level Banayein!</b>
+            <small style="color:var(--muted);font-size:10px">Apna Question submit karein, admin review karega!</small>
+          </div>
+          <button class="btn small gold" onclick="openSubmitModal()">Create ➔</button>
+        </div>
+
+        <div class="sectionHead" style="margin-top:4px">
+          <h2>Mind Rush (30 Levels)</h2>
+          <span id="levelBadgeText">Stage 1</span>
+        </div>
+
+        <div class="levelProgressBox">
+          <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700">
+            <span>Completion Progress</span>
+            <span id="levelPercentText">0 / 30</span>
+          </div>
+          <div class="progressBar"><i id="levelFillBar" style="width:2%"></i></div>
+        </div>
+
+        <div class="levelMap" id="levelMapGrid"></div>
+      </div>
+    </section>
+
+    <!-- MIND RUSH PLAY ARENA -->
+    <section id="play" class="screen">
+      <div class="gameHeader">
+        <div class="livesRow" id="livesContainer">
+          <span class="heart" id="heart1">❤️</span>
+          <span class="heart" id="heart2">❤️</span>
+        </div>
+        <div class="timerBadge" id="playTimer">25s</div>
+        <button class="closeGameBtn" onclick="confirmExitGame()" title="Close Game">✕</button>
+      </div>
+
+      <div class="qCard">
+        <div class="qBadge" id="playLevelTitle">
+          <span class="kbcPulse"></span>
+          <span id="qBadgeTitle">STAGE 1</span>
+        </div>
+        <div class="qText" id="questionText">Loading challenge...</div>
+        <span class="qMood" id="questionMood">💡 Single Life</span>
+      </div>
+
+      <div class="optionsGrid" id="optionsContainer"></div>
+    </section>
+
+    <!-- WITHDRAWAL (WALLET) SCREEN -->
+    <section id="wallet" class="screen">
+      <div class="walletMaster" style="padding:18px">
+        <div class="balanceLabel"><span>Available Coins</span></div>
+        <div class="bigCoins" id="wdAvailableCoins">0 <span>COINS</span></div>
+        <div style="font-size:11px;color:var(--cyan);margin-top:3px">🔥 Firebase: gamerush_withdrawals</div>
+      </div>
+
+      <div class="sectionHead"><h2>Withdraw Coins</h2><span>Min 5,000 Coins</span></div>
+      <div class="card">
+        <div class="inputGroup">
+          <label>Mine Rush Android App UID</label>
+          <input id="appUidInput" type="text" placeholder="Enter your Mine Rush Android App ID">
+        </div>
+
+        <div class="inputGroup">
+          <label>Coins Amount</label>
+          <input id="amountInput" type="number" min="5000" placeholder="Min 5,000 Coins">
+          <div class="quickRow">
+            <button class="chip" onclick="setCoinWd(5000)">5,000</button>
+            <button class="chip" onclick="setCoinWd(10000)">10,000</button>
+            <button class="chip" onclick="setCoinWd(25000)">25,000</button>
+            <button class="chip" onclick="setMaxWd()" style="color:var(--cyan)">MAX</button>
+          </div>
+        </div>
+
+        <button class="btn green" style="margin-top:16px" onclick="submitWithdrawal()">REQUEST PAYOUT</button>
+      </div>
+
+      <div class="sectionHead"><h2>Withdrawal Records</h2><span id="historyCounter">0 records</span></div>
+      <div class="historyList" id="historyBox"></div>
+    </section>
+
+    <!-- PROFILE SCREEN -->
+    <section id="profile" class="screen">
+      <div class="card" style="text-align:center;padding:22px 18px">
+        <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#06b6d4);margin:auto;display:grid;place-items:center;font-size:26px;font-weight:900" id="profAvatar">G</div>
+        <h2 style="margin:12px 0 2px;font-size:18px" id="profName">Telegram User</h2>
+        <p style="margin:0;color:var(--muted);font-size:11.5px" id="profUsername">@user</p>
+        <div style="margin-top:10px;font-size:11px;color:var(--cyan);background:#0a101f;padding:5px 12px;border-radius:99px;display:inline-block" id="profTgId">TG ID: —</div>
+      </div>
+
+      <div class="sectionHead"><h2>Admin & Controls</h2><span>Master Settings</span></div>
+      <div class="card" style="display:grid;gap:12px">
+        <button class="btn gold" onclick="openAdminPinModal()">👑 OPEN ADMIN CONTROL PANEL</button>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:12px">
+          <div><b style="font-size:13px">🔊 Sound Effects</b><small style="display:block;color:var(--muted);font-size:10px">KBC tension + Mines FX</small></div>
+          <button class="btn small secondary" onclick="toggleSound()" id="soundSettingBtn">ENABLED</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom">
+    <button class="nav active" data-target="home" onclick="go('home')">⌂<span>Home</span></button>
+    <button class="nav" data-target="games" onclick="go('games')">🎮<span>Games</span></button>
+    <button class="nav" data-target="wallet" onclick="go('wallet')">💼<span>Wallet</span></button>
+    <button class="nav" data-target="profile" onclick="go('profile')">👤<span>Profile</span></button>
+  </nav>
+</div>
+
+<!-- Modal Container -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <h3 class="sheetTitle" id="mTitle">Alert</h3>
+    <div id="mBody"></div>
+    <div id="mActions" style="display:flex;gap:8px;margin-top:16px"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   STARTER QUESTIONS (30 FIXED STAGES)
+   ===================================================================== */
+const initial30Questions = [
+  {
+    q: "Crush ne bola: 'Aap bohot acche ho par mere type ke nahi ho.' Real secret kya hai?",
+    opts: ["Aap dono achhe dost rahoge", "Shakal dekh kar politely reject kiya hai!", "Usko time chahiye", "Woh sharma rahi hai"],
+    ansText: "Shakal dekh kar politely reject kiya hai!",
+    mood: "💔 Crush Reality"
+  },
+  {
+    q: "Single ladka raat ko 2 baje tak phone me kya dhoondh raha hota hai?",
+    opts: ["True Love", "Future career plan", "100% charger aur reels ka ant!", "Ex ki purani photos"],
+    ansText: "100% charger aur reels ka ant!",
+    mood: "😂 Single Life"
+  },
+  {
+    q: "Jab ladki puche: 'Main moti lag rahi hu na?' Sabse safe jawab kya hai?",
+    opts: ["Nahi tum bilkul patli ho (Trap!)", "Thoda sa wazan badha hai", "Chupchap behosh hone ka natak karo!", "Sach bol do"],
+    ansText: "Chupchap behosh hone ka natak karo!",
+    mood: "⚠️ Survival Guide"
+  },
+  {
+    q: "Chat par ladka 1 ghante se 'Typing...' dikha raha hai. Aakhri me kya message aayega?",
+    opts: ["Lamba love paragraph", "'Hmm' ya 'Ok'!", "Apni dil ki baat", "Voice note"],
+    ansText: "'Hmm' ya 'Ok'!",
+    mood: "💔 Chat Reality"
+  },
+  {
+    q: "Valentine's Day par single log kaun sa tyohar manate hain?",
+    opts: ["Black Day", "Sad Day", "Money Saving Day (Bachat hi Bachat)!", "Sleep Day"],
+    ansText: "Money Saving Day (Bachat hi Bachat)!",
+    mood: "💰 Financial Genius"
+  },
+  {
+    q: "Ex ki shaadi me jaane ka sabse solid reason kya hona chahiye?",
+    opts: ["Aakhri baar chehra dekhna", "Dosti nibhana", "Free ka paneer aur gulab jamun pelna!", "Aashirwad dena"],
+    ansText: "Free ka paneer aur gulab jamun pelna!",
+    mood: "🍲 Food Lover"
+  },
+  {
+    q: "Duniya ka sabse dangerous aur khatarnak password kaun sa hai?",
+    opts: ["12345678", "Admin@123", "Ex ka naam jo current wali ne dekh liya!", "Bank OTP"],
+    ansText: "Ex ka naam jo current wali ne dekh liya!",
+    mood: "🔥 High Danger"
+  },
+  {
+    q: "Jab partner bole: 'It's not you, it's me' - iska actual meaning kya hota hai?",
+    opts: ["Uski galti hai sach me", "Tumse bore ho chuke hain, naya dhoondh liya!", "Woh sach me confused hai", "Usko space chahiye"],
+    ansText: "Tumse bore ho chuke hain, naya dhoondh liya!",
+    mood: "💔 Breakup Truth"
+  },
+  {
+    q: "Ladka bola: 'Tumhare bina main mar jaunga'. 2 saal baad kya kar raha hoga?",
+    opts: ["Depression me hoga", "Single baitha hoga", "Nayi wali ke sath reels pe naach raha hoga!", "Sanyasi ban gaya hoga"],
+    ansText: "Nayi wali ke sath reels pe naach raha hoga!",
+    mood: "😂 Dhokha Proof"
+  },
+  {
+    q: "True Love aur Ghost (Bhoot) me kya common baat hoti hai?",
+    opts: ["Dono raat ko aate hain", "Baatein sab karte hain, dekha kisi ne nahi!", "Dono darr paida karte hain", "Dono hawa me uddte hain"],
+    ansText: "Baatein sab karte hain, dekha kisi ne nahi!",
+    mood: "👻 Love Paradox"
+  },
+  {
+    q: "Shaadi aur Jail me sabse bada farak kya hota hai?",
+    opts: ["Shaadi me khana accha milta hai", "Jail me achhe bartav par rihaai mil jaati hai!", "Shaadi me biwi hoti hai", "Jail me danda padta hai"],
+    ansText: "Jail me achhe bartav par rihaai mil jaati hai!",
+    mood: "🤯 Ultimate Savage"
+  },
+  {
+    q: "Dil aur Dimaag ki ladai me hamesha kiski sunni chahiye?",
+    opts: ["Dil ki suno", "Dimaag ki suno", "Wallet ki suno, baaki sab moh-maya hai!", "Pandit ji ki suno"],
+    ansText: "Wallet ki suno, baaki sab moh-maya hai!",
+    mood: "💸 Paisa Bolta Hai"
+  },
+  {
+    q: "Single ladke ko sabse jyada jalan kab hoti hai?",
+    opts: ["Jab exam me fail ho", "Jab chapri ladke ke sath sundar pari ghumti dikhe!", "Jab dost ki job lage", "Jab phone battery 1% ho"],
+    ansText: "Jab chapri ladke ke sath sundar pari ghumti dikhe!",
+    mood: "😂 Universal Pain"
+  },
+  {
+    q: "Relationship me sabse bada jhooth kaun sa bola jaata hai?",
+    opts: ["I will love you forever", "'Bas 2 min me so raha hu, good night!'", "Main kabhi jhooth nahi bolta", "Tum meri first choice ho"],
+    ansText: "'Bas 2 min me so raha hu, good night!'",
+    mood: "📱 2 AM Reality"
+  },
+  {
+    q: "Ek ladki ne 'Bhaiya' bolkar lift maangi, sabse mast reply kya hoga?",
+    opts: ["Khushi se lift do", "Aadha helmet pehno aur bolo: 'Petrol nahi hai didi'!", "Number maang lo", "Bolo: 'Meri koi behen nahi hai'"],
+    ansText: "Aadha helmet pehno aur bolo: 'Petrol nahi hai didi'!",
+    mood: "😎 Savage Defense"
+  },
+  {
+    q: "Pyaar me dil tootne par sabse pehla dard kahan hota hai?",
+    opts: ["Seene me (Dil)", "Mobile recharge & gift bills me!", "Aankhon me", "Dimag me"],
+    ansText: "Mobile recharge & gift bills me!",
+    mood: "💔 Reality Check"
+  },
+  {
+    q: "Doctor ne 3 goliya di aur bola har aadhe ghante baad 1 leni hai. Saari kitni der me khatam hongi?",
+    opts: ["1.5 Ghante me", "1 Ghante me (0, 30, 60 min!)", "2 Ghante me", "30 Minute me"],
+    ansText: "1 Ghante me (0, 30, 60 min!)",
+    mood: "🧠 Brain Teaser"
+  },
+  {
+    q: "Agar 1 kapda dhoop me 15 min me sookhta hai, to 10 kapde kitni der me sookhenge?",
+    opts: ["150 Minute", "15 Minute hi lagenge!", "30 Minute", "Dhoop pe depend hai"],
+    ansText: "15 Minute hi lagenge!",
+    mood: "💡 Common Sense"
+  },
+  {
+    q: "Andhere kamre me mombatti, laalten aur chulha hai. 1 machis hai, pehle kya jalaoge?",
+    opts: ["Mombatti", "Laalten", "Machis ki teeli!", "Chulha"],
+    ansText: "Machis ki teeli!",
+    mood: "🧠 99% Fail Trap"
+  },
+  {
+    q: "Ek table pe 5 machhliyan hain, 2 doob gayi... ab table pe kitni machhliyan bachi?",
+    opts: ["3", "5 (Machhli doobti nahi pagle!)", "0", "4"],
+    ansText: "5 (Machhli doobti nahi pagle!)",
+    mood: "🤯 Tricky IQ"
+  },
+  {
+    q: "Dost ne bola: 'Bhai kal pakka paise wapas kar dunga'. Paise kab aayenge?",
+    opts: ["Kal subah 9 baje", "1 hafte me", "Agle janam me!", "Kal shaam ko"],
+    ansText: "Agle janam me!",
+    mood: "😂 Dost Ki Kahani"
+  },
+  {
+    q: "Success ka sabse fast shortcut kya hai bro?",
+    opts: ["Instagram reels scroll karna", "Reel scroll band karke consistent hard work!", "Lottery ticket khareedna", "Kismat ko kosna"],
+    ansText: "Reel scroll band karke consistent hard work!",
+    mood: "🔥 Hard Motivation"
+  },
+  {
+    q: "Aisi kaun si cheez hai jo aapse bina kuch maange aapka saara time chheen leti hai?",
+    opts: ["Padosi ki baatein", "Smartphone reels!", "Alarm clock", "Kutta"],
+    ansText: "Smartphone reels!",
+    mood: "📱 Harsh Truth"
+  },
+  {
+    q: "Girte hain shahsawar hi maidaan-e-jung me! Iska asli matlab kya hai?",
+    opts: ["Ghoda tez bhagana chahiye", "Jo koshish karta hai wahi seekhta hai!", "War me mat jao", "Helmet pehno"],
+    ansText: "Jo koshish karta hai wahi seekhta hai!",
+    mood: "🦁 Mindset"
+  },
+  {
+    q: "Rishtedaar puchein: 'Aur beta aage ka kya plan hai?' Sabse best reply?",
+    opts: ["Plan secret hai uncle!", "Rona shuru kar do", "Aapki ladki se shaadi", "Emergency call ka drama"],
+    ansText: "Plan secret hai uncle!",
+    mood: "😎 Savage Mode"
+  },
+  {
+    q: "Aapke paas 6 seb hain, aapne 4 utha liye. Ab aapke paas kitne seb hain?",
+    opts: ["2", "4 (Jo aapne uthaye!)", "6", "0"],
+    ansText: "4 (Jo aapne uthaye!)",
+    mood: "🍎 Tricky Math"
+  },
+  {
+    q: "Dukandar 1 rs me 1 toffee deta hai aur 3 wrappers pe 1 toffee free. 15 rs me kitni toffee milengi?",
+    opts: ["15", "20", "22 Toffees!", "21"],
+    ansText: "22 Toffees!",
+    mood: "🧩 High IQ Trap"
+  },
+  {
+    q: "Zindagi me sabse jyada dhokha kis cheez se milta hai?",
+    opts: ["Wifi speed se", "Expectations (Umeedon) se!", "Phone battery se", "Traffic light se"],
+    ansText: "Expectations (Umeedon) se!",
+    mood: "💔 Hard Fact"
+  },
+  {
+    q: "Aisi kaun si jagah hai jahan 100 log jaate hain par 101 log wapas aate hain?",
+    opts: ["Hospital", "Shaadi / Barat (Dulhan ke sath!)", "Cinema Hall", "School"],
+    ansText: "Shaadi / Barat (Dulhan ke sath!)",
+    mood: "😂 Desi Riddle"
+  },
+  {
+    q: "Woh kya hai jise aap jitna aage badhate ho, woh utna hi aapke peeche chhoot jaata hai?",
+    opts: ["Paisa", "Aapke kadam / Footsteps!", "Shadow", "Mobile network"],
+    ansText: "Aapke kadam / Footsteps!",
+    mood: "🧠 Brain Teaser"
+  }
+];
+
+let questionsPool = initial30Questions;
+const ADMIN_SECRET_PIN = "778899";
+
+/* =====================================================================
+   TELEGRAM USER IDENTITY & CONFIG
+   ===================================================================== */
+const tg = window.Telegram?.WebApp;
+try { tg?.ready(); tg?.expand(); } catch(e){}
+const tgUser = tg?.initDataUnsafe?.user || {};
+
+const TELEGRAM_UID = tgUser.id ? String(tgUser.id) : (localStorage.getItem('gamerush_uid') || ('TG_' + Math.floor(100000 + Math.random() * 900000)));
+localStorage.setItem('gamerush_uid', TELEGRAM_UID);
+
+const TELEGRAM_NAME = tgUser.first_name ? (tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '')) : 'Game Rush User';
+const TELEGRAM_USERNAME = tgUser.username ? '@' + tgUser.username : '@telegram_user';
+
+/* =====================================================================
+   AUDIO EFFECTS & CASINO MINES SYNTHESIZER
+   ===================================================================== */
+let audioCtx = null;
+let kbcInterval = null;
+let kbcDroneOsc = null;
+let kbcDroneGain = null;
+
+function getAudioContext() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+const SoundFX = {
+  tap() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), o = c.createOscillator(), g = c.createGain();
+      o.frequency.setValueAtTime(650, c.currentTime);
+      g.gain.setValueAtTime(0.04, c.currentTime);
+      g.gain.linearRampToValueAtTime(0, c.currentTime + 0.04);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + 0.04);
+    } catch(e){}
+  },
+
+  gem() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), now = c.currentTime;
+      [1100, 1480, 1920].forEach((freq, idx) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, now + idx * 0.04);
+        g.gain.setValueAtTime(0.08, now + idx * 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.18);
+        o.connect(g); g.connect(c.destination);
+        o.start(now + idx * 0.04);
+        o.stop(now + idx * 0.04 + 0.18);
+      });
+    } catch(e){}
+  },
+
+  explosion() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), now = c.currentTime;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(140, now);
+      o.frequency.exponentialRampToValueAtTime(28, now + 0.45);
+      g.gain.setValueAtTime(0.18, now);
+      g.gain.linearRampToValueAtTime(0, now + 0.45);
+      o.connect(g); g.connect(c.destination);
+      o.start(now); o.stop(now + 0.45);
+    } catch(e){}
+  },
+
+  cashout() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), now = c.currentTime;
+      [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(freq, now + idx * 0.06);
+        g.gain.setValueAtTime(0.09, now + idx * 0.06);
+        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.35);
+        o.connect(g); g.connect(c.destination);
+        o.start(now + idx * 0.06);
+        o.stop(now + idx * 0.06 + 0.35);
+      });
+    } catch(e){}
+  },
+
+  kbcLock() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), now = c.currentTime;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(220, now);
+      o.frequency.exponentialRampToValueAtTime(110, now + 0.3);
+      g.gain.setValueAtTime(0.09, now);
+      g.gain.linearRampToValueAtTime(0, now + 0.3);
+      o.connect(g); g.connect(c.destination);
+      o.start(now); o.stop(now + 0.3);
+    } catch(e){}
+  },
+
+  kbcWin() {
+    if (!state.sound) return;
+    this.cashout();
+  },
+
+  wrong() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), o = c.createOscillator(), g = c.createGain();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(150, c.currentTime);
+      o.frequency.linearRampToValueAtTime(70, c.currentTime + 0.28);
+      g.gain.setValueAtTime(0.08, c.currentTime);
+      g.gain.linearRampToValueAtTime(0, c.currentTime + 0.28);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + 0.28);
+    } catch(e){}
+  },
+
+  heartLost() {
+    if (!state.sound) return;
+    try {
+      const c = getAudioContext(), o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(320, c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(120, c.currentTime + 0.3);
+      g.gain.setValueAtTime(0.09, c.currentTime);
+      g.gain.linearRampToValueAtTime(0, c.currentTime + 0.3);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + 0.3);
+    } catch(e){}
+  },
+
+  startKBCSuspense() {
+    if (!state.sound) return;
+    this.stopKBCSuspense();
+    try {
+      const c = getAudioContext();
+      kbcDroneOsc = c.createOscillator();
+      kbcDroneGain = c.createGain();
+      kbcDroneOsc.type = 'sine';
+      kbcDroneOsc.frequency.setValueAtTime(55, c.currentTime);
+      kbcDroneGain.gain.setValueAtTime(0.025, c.currentTime);
+      kbcDroneOsc.connect(kbcDroneGain);
+      kbcDroneGain.connect(c.destination);
+      kbcDroneOsc.start();
+
+      let beat = 0;
+      kbcInterval = setInterval(() => {
+        if (!state.sound) return;
+        const now = c.currentTime;
+        const o = c.createOscillator(), g = c.createGain();
+
+        if (beat % 2 === 0) {
+          o.type = 'sine';
+          o.frequency.setValueAtTime(80, now);
+          o.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+          g.gain.setValueAtTime(0.08, now);
+          g.gain.linearRampToValueAtTime(0, now + 0.12);
+        } else {
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(880, now);
+          o.frequency.exponentialRampToValueAtTime(440, now + 0.04);
+          g.gain.setValueAtTime(0.035, now);
+          g.gain.linearRampToValueAtTime(0, now + 0.04);
+        }
+
+        o.connect(g); g.connect(c.destination);
+        o.start(now); o.stop(now + 0.14);
+        beat++;
+      }, 550);
+    } catch(e){}
+  },
+
+  stopKBCSuspense() {
+    if (kbcInterval) { clearInterval(kbcInterval); kbcInterval = null; }
+    if (kbcDroneOsc) {
+      try {
+        kbcDroneGain.gain.linearRampToValueAtTime(0, getAudioContext().currentTime + 0.1);
+        setTimeout(() => {
+          try { kbcDroneOsc.stop(); kbcDroneOsc.disconnect(); } catch(e){}
+          kbcDroneOsc = null;
+        }, 120);
+      } catch(e){ kbcDroneOsc = null; }
+    }
+  }
+};
+
+/* =====================================================================
+   APP STATE & STORAGE
+   ===================================================================== */
+const todayStr = new Date().toISOString().slice(0, 10);
+let savedState = JSON.parse(localStorage.getItem('gamerush_state') || 'null');
+
+let state = savedState || {
+  tgId: TELEGRAM_UID,
+  name: TELEGRAM_NAME,
+  username: TELEGRAM_USERNAME,
+  coins: 50,
+  todayEarned: 0,
+  todayWithdrawn: 0,
+  totalWithdrawn: 0,
+  lastActiveDate: todayStr,
+  unlockedLevel: 1,
+  completedLevels: [],
+  withdrawals: [],
+  sound: true,
+  appUid: localStorage.getItem('minerush_android_uid') || ''
+};
+
+if (state.lastActiveDate !== todayStr) {
+  state.todayEarned = 0;
+  state.todayWithdrawn = 0;
+  state.lastActiveDate = todayStr;
+  saveLocal();
+}
+
+function saveLocal() {
+  localStorage.setItem('gamerush_state', JSON.stringify(state));
+  syncToFirebase();
+  updateMinesBalanceDisplay();
+}
+
+/* =====================================================================
+   FIREBASE SYNC
+   ===================================================================== */
+window.initCloudSync = function() {
+  if (!window.fbDb) return;
+
+  const userRef = window.dbRef(window.fbDb, 'gamerush_users/' + TELEGRAM_UID);
+  window.dbGet(userRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const cloudData = snapshot.val();
+      state.coins = cloudData.coins ?? state.coins;
+      state.unlockedLevel = Math.max(state.unlockedLevel, cloudData.unlockedLevel || 1);
+      state.totalWithdrawn = cloudData.totalWithdrawn ?? state.totalWithdrawn;
+      if (cloudData.completedLevels) state.completedLevels = cloudData.completedLevels;
+      renderHome();
+      renderLevels();
+      updateMinesBalanceDisplay();
+    } else {
+      syncToFirebase();
+    }
+  }).catch((err) => console.warn("Firebase Read User:", err));
+
+  const qRef = window.dbRef(window.fbDb, 'gamerush_questions');
+  window.dbGet(qRef).then((snapshot) => {
+    if (snapshot.exists() && snapshot.val()) {
+      questionsPool = snapshot.val();
+      document.getElementById('cloudStatus').textContent = '⚡ Questions: ' + questionsPool.length;
+    } else {
+      window.dbSet(qRef, initial30Questions);
+      questionsPool = initial30Questions;
+      document.getElementById('cloudStatus').textContent = '⚡ 30 Nodes Seeded';
+    }
+    renderLevels();
+  }).catch((err) => {
+    questionsPool = initial30Questions;
+    renderLevels();
+  });
+
+  checkLiveAdminPopup();
+};
+
+function checkLiveAdminPopup() {
+  if (!window.fbDb) return;
+  const popRef = window.dbRef(window.fbDb, 'gamerush_popup');
+  window.dbGet(popRef).then((snap) => {
+    if (snap.exists()) {
+      const pData = snap.val();
+      const lastSeen = sessionStorage.getItem('gamerush_seen_popup');
+      if (pData.active && lastSeen !== String(pData.timestamp)) {
+        sessionStorage.setItem('gamerush_seen_popup', String(pData.timestamp));
+        modal(pData.title || '📢 Announcement', `
+          <div style="padding:4px">
+            <p style="font-size:13px;color:#e2e8f0;line-height:1.5">${pData.msg}</p>
+          </div>
+        `, `<button class="btn green" onclick="closeModal()">Got It 👍</button>`);
+      }
+    }
+  }).catch(e => {});
+}
+
+function syncToFirebase() {
+  if (!window.fbDb || !window.firebaseReady) return;
+  try {
+    const userRef = window.dbRef(window.fbDb, 'gamerush_users/' + TELEGRAM_UID);
+    window.dbUpdate(userRef, {
+      tgId: TELEGRAM_UID,
+      name: state.name,
+      username: state.username,
+      coins: state.coins,
+      todayEarned: state.todayEarned,
+      todayWithdrawn: state.todayWithdrawn,
+      totalWithdrawn: state.totalWithdrawn,
+      unlockedLevel: state.unlockedLevel,
+      completedLevels: state.completedLevels,
+      appUid: state.appUid || '',
+      lastUpdated: Date.now()
+    });
+  } catch(e) {}
+}
+
+function fmt(n) { return Number(n || 0).toLocaleString('en-IN'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function modal(title, bodyHtml, actionsHtml = '') {
+  document.getElementById('mTitle').textContent = title;
+  document.getElementById('mBody').innerHTML = bodyHtml;
+  document.getElementById('mActions').innerHTML = actionsHtml;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+/* =====================================================================
+   GAMES NAVIGATION & TABS
+   ===================================================================== */
+function switchGameTab(tab) {
+  SoundFX.tap();
+  document.querySelectorAll('.gTabBtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('gtab_' + tab).classList.add('active');
+
+  if (tab === 'mines') {
+    document.getElementById('viewMinesGame').style.display = 'block';
+    document.getElementById('viewMindRush').style.display = 'none';
+    updateMinesBalanceDisplay();
+  } else {
+    document.getElementById('viewMinesGame').style.display = 'none';
+    document.getElementById('viewMindRush').style.display = 'block';
+    renderLevels();
+  }
+}
+
+/* =====================================================================
+   💣 BOMB FINDER (MINES CASINO GAME ENGINE)
+   ===================================================================== */
+let minesGame = {
+  isPlaying: false,
+  bet: 0,
+  bombCount: 3,
+  revealedGems: 0,
+  grid: [],
+  currentMultiplier: 1.0,
+  totalTiles: 25
+};
+
+// Initialize empty idle grid
+function initMinesGrid() {
+  const gridEl = document.getElementById('minesGrid');
+  gridEl.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const tile = document.createElement('div');
+    tile.className = 'mTile';
+    tile.id = 'tile_' + i;
+    tile.innerHTML = '●';
+    tile.style.color = '#253456';
+    tile.onclick = () => onTileClick(i);
+    gridEl.appendChild(tile);
+  }
+}
+
+function updateMinesBalanceDisplay() {
+  const el = document.getElementById('minesBalanceInfo');
+  if (el) el.textContent = `Balance: ${fmt(state.coins)} Coins`;
+}
+
+function setMinesBet(action) {
+  SoundFX.tap();
+  const input = document.getElementById('minesBetAmount');
+  let cur = Number(input.value || 0);
+
+  if (action === 'half') cur = Math.max(10, Math.floor(cur / 2));
+  else if (action === 'double') cur = Math.min(state.coins, cur * 2);
+  else if (action === '100') cur = 100;
+  else if (action === 'max') cur = state.coins;
+
+  input.value = cur;
+}
+
+// Calculate Stake-style Fair Multiplier
+function calcMinesMultiplier(bombs, gemsFound) {
+  if (gemsFound === 0) return 1.0;
+  let prob = 1.0;
+  for (let i = 0; i < gemsFound; i++) {
+    prob *= (25 - bombs - i) / (25 - i);
+  }
+  const mult = 0.97 / prob;
+  return Math.max(1.01, parseFloat(mult.toFixed(2)));
+}
+
+function startMinesGame() {
+  if (minesGame.isPlaying) return;
+
+  const betInput = document.getElementById('minesBetAmount');
+  const bet = Number(betInput.value || 0);
+  const bombs = parseInt(document.getElementById('minesCountSelect').value);
+
+  if (bet < 10) {
+    SoundFX.wrong();
+    showToast('⚠️ Minimum bet is 10 Coins!');
+    return;
+  }
+  if (bet > state.coins) {
+    SoundFX.wrong();
+    showToast('❌ Insufficient coins balance!');
+    return;
+  }
+
+  // Deduct Coins
+  state.coins -= bet;
+  saveLocal();
+  renderHome();
+
+  // Setup Mines State
+  minesGame.isPlaying = true;
+  minesGame.bet = bet;
+  minesGame.bombCount = bombs;
+  minesGame.revealedGems = 0;
+  minesGame.currentMultiplier = 1.0;
+
+  // Generate 25 tiles with randomly shuffled bombs
+  minesGame.grid = Array(25).fill(false);
+  let placed = 0;
+  while (placed < bombs) {
+    const r = Math.floor(Math.random() * 25);
+    if (!minesGame.grid[r]) {
+      minesGame.grid[r] = true; // true = Bomb 💣
+      placed++;
+    }
+  }
+
+  // Lock Betting UI
+  betInput.disabled = true;
+  document.getElementById('minesCountSelect').disabled = true;
+  document.getElementById('minesActiveBadge').textContent = 'PLAYING';
+  document.getElementById('minesActiveBadge').style.color = 'var(--gold)';
+  document.getElementById('minesActiveBadge').style.borderColor = 'rgba(245,158,11,.4)';
+
+  // Reset Grid Visuals
+  initMinesGrid();
+  updateMinesHUD();
+
+  // Render Cashout Button
+  renderMinesActionButton();
+  SoundFX.tap();
+  showToast('💣 Game Started! Pick a tile.');
+}
+
+function updateMinesHUD() {
+  document.getElementById('minesCurrentMult').textContent = minesGame.currentMultiplier.toFixed(2) + 'x';
+  const potential = Math.floor(minesGame.bet * minesGame.currentMultiplier);
+  document.getElementById('minesPotentialWin').textContent = fmt(potential) + ' Coins';
+}
+
+function renderMinesActionButton() {
+  const container = document.getElementById('minesActionContainer');
+  if (minesGame.isPlaying) {
+    const winCoins = Math.floor(minesGame.bet * minesGame.currentMultiplier);
+    container.innerHTML = `
+      <button class="btn ${minesGame.revealedGems > 0 ? 'green' : 'secondary'}" id="btnCashout" onclick="cashoutMines()" ${minesGame.revealedGems === 0 ? 'disabled' : ''}>
+        💰 CASHOUT (${minesGame.currentMultiplier.toFixed(2)}x • +${fmt(winCoins)} Coins)
+      </button>
+    `;
+  } else {
+    container.innerHTML = `
+      <button class="btn green" id="btnStartMines" onclick="startMinesGame()">START GAME 🚀</button>
+    `;
+    document.getElementById('minesBetAmount').disabled = false;
+    document.getElementById('minesCountSelect').disabled = false;
+    document.getElementById('minesActiveBadge').textContent = 'READY';
+    document.getElementById('minesActiveBadge').style.color = 'var(--green)';
+    document.getElementById('minesActiveBadge').style.borderColor = 'rgba(16,185,129,.3)';
+  }
+}
+
+function onTileClick(idx) {
+  if (!minesGame.isPlaying) return;
+  const tileEl = document.getElementById('tile_' + idx);
+  if (tileEl.classList.contains('revealed')) return;
+
+  const isBomb = minesGame.grid[idx];
+
+  if (isBomb) {
+    // 💥 HIT BOMB! BOOM!
+    tileEl.classList.add('revealed', 'mine');
+    tileEl.innerHTML = '💣';
+    SoundFX.explosion();
+    minesGameOver(false, idx);
+  } else {
+    // 💎 FOUND GEM!
+    tileEl.classList.add('revealed', 'gem');
+    tileEl.innerHTML = '💎';
+    SoundFX.gem();
+
+    minesGame.revealedGems++;
+    minesGame.currentMultiplier = calcMinesMultiplier(minesGame.bombCount, minesGame.revealedGems);
+    updateMinesHUD();
+    renderMinesActionButton();
+
+    // Check if user cleared all possible gems!
+    const totalSafeGems = 25 - minesGame.bombCount;
+    if (minesGame.revealedGems === totalSafeGems) {
+      cashoutMines(); // Auto-Win!
+    }
+  }
+}
+
+function cashoutMines() {
+  if (!minesGame.isPlaying || minesGame.revealedGems === 0) return;
+
+  const winAmount = Math.floor(minesGame.bet * minesGame.currentMultiplier);
+  state.coins += winAmount;
+  state.todayEarned += (winAmount - minesGame.bet);
+  saveLocal();
+  renderHome();
+
+  SoundFX.cashout();
+  minesGameOver(true);
+
+  modal('💎 CASHOUT SUCCESS!', `
+    <div style="text-align:center;padding:12px">
+      <div style="font-size:42px">💰</div>
+      <h2 style="color:var(--gold);margin:6px 0">+${fmt(winAmount)} Coins!</h2>
+      <p style="color:#cbd5e1;font-size:12px">
+        Multiplier: <b style="color:var(--green)">${minesGame.currentMultiplier.toFixed(2)}x</b> | Safe Gems: <b>${minesGame.revealedGems}</b>
+      </p>
+    </div>
+  `, `<button class="btn green" onclick="closeModal()">Collect ➔</button>`);
+}
+
+function minesGameOver(isWin, hitIndex = -1) {
+  minesGame.isPlaying = false;
+
+  // Reveal remaining tiles in ghost mode
+  for (let i = 0; i < 25; i++) {
+    const tile = document.getElementById('tile_' + i);
+    tile.classList.add('disabled');
+    if (!tile.classList.contains('revealed')) {
+      tile.classList.add('ghost');
+      tile.innerHTML = minesGame.grid[i] ? '💣' : '💎';
+      tile.style.color = minesGame.grid[i] ? '#ef4444' : '#10b981';
+    }
+  }
+
+  if (!isWin) {
+    showToast('💥 BOOM! Bomb Blast. You lost ' + fmt(minesGame.bet) + ' Coins.');
+  }
+
+  renderMinesActionButton();
+  updateMinesHUD();
+}
+
+/* =====================================================================
+   MIND RUSH GAMEPLAY (30 LEVELS ENGINE)
+   ===================================================================== */
+let currentLevel = 1;
+let currentLives = 2;
+let gameTimer = null;
+let timeLeft = 25;
+let levelWrongAttempts = 0;
+let levelAdReviveUsed = false;
+let optionLocked = false;
+let activeQuestionObj = null;
+let shuffledOptions = [];
+let shuffledCorrectIndex = -1;
+
+function getQuestionForLevel(lvl) {
+  const pool = (questionsPool && questionsPool.length) ? questionsPool : initial30Questions;
+  const idx = (lvl - 1) % pool.length;
+  return pool[idx];
+}
+
+function renderLevels() {
+  document.getElementById('levelBadgeText').textContent = 'Stage ' + state.unlockedLevel + ' / 30';
+  const completedCount = state.completedLevels.filter(x => x <= 30).length;
+  document.getElementById('levelPercentText').textContent = completedCount + ' / 30 Cleared';
+  document.getElementById('levelFillBar').style.width = Math.min(100, Math.round((completedCount / 30) * 100)) + '%';
+
+  const grid = document.getElementById('levelMapGrid');
+  grid.innerHTML = '';
+
+  for (let i = 1; i <= 30; i++) {
+    const b = document.createElement('button');
+    const isDone = state.completedLevels.includes(i);
+    const isOpen = i === state.unlockedLevel;
+    const isLock = i > state.unlockedLevel;
+
+    b.className = 'levelBtn ' + (isDone ? 'done' : isOpen ? 'open' : 'lock');
+    b.innerHTML = isDone ? '✓' : isLock ? '🔒' : i;
+    b.onclick = () => {
+      if (isLock) {
+        SoundFX.wrong();
+        showToast('🔒 Pehle Level ' + (i - 1) + ' clear karein!');
+      } else {
+        startLevel(i);
+      }
+    };
+    grid.appendChild(b);
+  }
+}
+
+function updateHeartsUI() {
+  document.getElementById('heart1').className = 'heart ' + (currentLives < 1 ? 'lost' : '');
+  document.getElementById('heart2').className = 'heart ' + (currentLives < 2 ? 'lost' : '');
+}
+
+function startLevel(lvl) {
+  currentLevel = lvl;
+  currentLives = 2;
+  levelWrongAttempts = 0;
+  levelAdReviveUsed = false;
+  optionLocked = false;
+  timeLeft = 25;
+
+  activeQuestionObj = getQuestionForLevel(lvl);
+  const correctText = activeQuestionObj.ansText || activeQuestionObj.opts[activeQuestionObj.ans || 0];
+
+  shuffledOptions = [...activeQuestionObj.opts].sort(() => Math.random() - 0.5);
+  shuffledCorrectIndex = shuffledOptions.indexOf(correctText);
+
+  go('play');
+  updateHeartsUI();
+  loadQuestion();
+  startTimer();
+  SoundFX.startKBCSuspense();
+}
+
+function loadQuestion() {
+  document.getElementById('qBadgeTitle').textContent = 'STAGE ' + currentLevel + ' / 30';
+  document.getElementById('questionText').textContent = activeQuestionObj.q;
+  document.getElementById('questionMood').textContent = activeQuestionObj.mood || "💡 Mind Trap";
+
+  const box = document.getElementById('optionsContainer');
+  box.innerHTML = '';
+
+  shuffledOptions.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'optBtn';
+    btn.id = 'opt_' + idx;
+    btn.innerHTML = '<span>' + opt + '</span><span style="opacity:.3;font-size:11px">●</span>';
+    btn.onclick = () => handleChoice(idx, btn);
+    box.appendChild(btn);
+  });
+}
+
+function startTimer() {
+  clearInterval(gameTimer);
+  document.getElementById('playTimer').textContent = timeLeft + 's';
+  gameTimer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('playTimer').textContent = timeLeft + 's';
+    if (timeLeft <= 0) {
+      clearInterval(gameTimer);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleChoice(chosenIdx, btnEl) {
+  if (optionLocked || currentLives <= 0) return;
+  SoundFX.kbcLock();
+
+  if (chosenIdx === shuffledCorrectIndex) {
+    optionLocked = true;
+    clearInterval(gameTimer);
+    SoundFX.stopKBCSuspense();
+    btnEl.classList.add('correct');
+    SoundFX.kbcWin();
+
+    const earnedCoins = (levelWrongAttempts === 0) ? 5 : 2;
+    state.coins += earnedCoins;
+    state.todayEarned += earnedCoins;
+
+    if (!state.completedLevels.includes(currentLevel)) {
+      state.completedLevels.push(currentLevel);
+    }
+    state.unlockedLevel = Math.min(30, Math.max(state.unlockedLevel, currentLevel + 1));
+    saveLocal();
+
+    setTimeout(() => {
+      modal('🎉 Level Cleared!', `
+        <div style="text-align:center;padding:10px">
+          <div style="font-size:38px">🏆</div>
+          <h2 style="color:var(--gold);margin:8px 0">+${earnedCoins} Coins Earned!</h2>
+          <p style="color:#cbd5e1;font-size:12px">
+            ${currentLevel >= 30 ? '🔥 Mubarak ho! Saare 30 levels complete ho gaye!' : 'Agla stage unlock ho gaya hai.'}
+          </p>
+        </div>
+      `, `
+        ${currentLevel < 30 ? `<button class="btn green" onclick="closeModal(); startLevel(currentLevel + 1)">Next Level ➔</button>` : `<button class="btn green" onclick="closeModal(); go('games')">Levels Map</button>`}
+      `);
+    }, 450);
+
+  } else {
+    levelWrongAttempts++;
+    btnEl.classList.add('wrong', 'shake');
+    btnEl.disabled = true;
+    currentLives--;
+    updateHeartsUI();
+
+    if (currentLives > 0) {
+      SoundFX.heartLost();
+      showToast('❌ Galat jawab! 1 Chance baki hai, fir se socho.');
+    } else {
+      optionLocked = true;
+      clearInterval(gameTimer);
+      SoundFX.stopKBCSuspense();
+      SoundFX.wrong();
+      showGameOverModal();
+    }
+  }
+}
+
+function handleTimeout() {
+  currentLives = 0;
+  updateHeartsUI();
+  SoundFX.stopKBCSuspense();
+  SoundFX.wrong();
+  showGameOverModal("⏰ Time Up! Waqt khatam ho gaya.");
+}
+
+function showGameOverModal(msg = "Dono chances khatam! Sahi option choose nahi ho paya.") {
+  const adBtn = !levelAdReviveUsed 
+    ? `<button class="btn" onclick="watchAdForChance()">📺 Watch Ad (+1 Chance)</button>`
+    : '';
+
+  modal('💔 Khel Khatam', `
+    <div style="text-align:center;padding:8px">
+      <div style="font-size:36px">🥺</div>
+      <p style="margin-top:8px;color:#e2e8f0;font-size:12px">${msg}</p>
+      <small style="color:var(--muted)">Ad dekh kar 1 extra chance le sakte ho ya restart karein.</small>
+    </div>
+  `, `
+    <button class="btn secondary" onclick="closeModal(); startLevel(currentLevel)">🔄 Restart Level</button>
+    ${adBtn}
+  `);
+}
+
+function watchAdForChance() {
+  closeModal();
+  showToast('📺 Playing Rewarded Ad...');
+  setTimeout(() => {
+    levelAdReviveUsed = true;
+    currentLives = 1;
+    optionLocked = false;
+    timeLeft = 20;
+    updateHeartsUI();
+    startTimer();
+    SoundFX.startKBCSuspense();
+    showToast('❤️ 1 Chance Mil Gaya! Khel jaari rakhein.');
+  }, 1000);
+}
+
+function confirmExitGame() {
+  SoundFX.tap();
+  clearInterval(gameTimer);
+  SoundFX.stopKBCSuspense();
+  modal('Exit Game?', `
+    <p style="text-align:center;color:#cbd5e1;font-size:13px">
+      Kya aap game chhod kar bahar aana chahte hain?
+    </p>
+  `, `
+    <button class="btn secondary" onclick="closeModal(); startTimer(); SoundFX.startKBCSuspense()">Continue</button>
+    <button class="btn" style="background:var(--danger)" onclick="closeModal(); go('games')">Exit Game</button>
+  `);
+}
+
+/* =====================================================================
+   USER LEVEL SUBMISSION
+   ===================================================================== */
+function openSubmitModal() {
+  SoundFX.tap();
+  modal('💡 Submit Your Level Idea', `
+    <div style="text-align:left">
+      <p style="font-size:11.5px;color:var(--muted);margin-bottom:12px">
+        Apna riddle ya trap question submit karein. Admin approve karte hi game me add ho jayega!
+      </p>
+      <div class="inputGroup"><label>Your Question</label><textarea id="subQ" rows="2" placeholder="e.g. Crush ne bola 'Tu bohot accha hai'..."></textarea></div>
+      <div class="inputGroup"><label>Option 1</label><input id="subOpt1" placeholder="Option 1"></div>
+      <div class="inputGroup"><label>Option 2</label><input id="subOpt2" placeholder="Option 2"></div>
+      <div class="inputGroup"><label>Option 3</label><input id="subOpt3" placeholder="Option 3"></div>
+      <div class="inputGroup"><label>Option 4</label><input id="subOpt4" placeholder="Option 4"></div>
+      <div class="inputGroup">
+        <label>Correct Answer Kon Sa Hai?</label>
+        <select id="subCorrect">
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+        </select>
+      </div>
+      <div class="inputGroup"><label>Category / Mood</label><input id="subMood" placeholder="e.g. 😂 Single Life, 💔 Breakup"></div>
+    </div>
+  `, `
+    <button class="btn secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn gold" onclick="submitLevelIdea()">Submit Idea ➔</button>
+  `);
+}
+
+function submitLevelIdea() {
+  const q = document.getElementById('subQ').value.trim();
+  const o1 = document.getElementById('subOpt1').value.trim();
+  const o2 = document.getElementById('subOpt2').value.trim();
+  const o3 = document.getElementById('subOpt3').value.trim();
+  const o4 = document.getElementById('subOpt4').value.trim();
+  const c = parseInt(document.getElementById('subCorrect').value);
+  const mood = document.getElementById('subMood').value.trim() || '💡 Community Trap';
+
+  if (!q || !o1 || !o2 || !o3 || !o4) {
+    showToast('⚠️ Saare fields bharna zaroori hai!');
+    return;
+  }
+
+  const opts = [o1, o2, o3, o4];
+  const subId = 'SUB-' + Date.now().toString().slice(-8);
+
+  const submissionData = {
+    id: subId,
+    q,
+    opts,
+    ansText: opts[c - 1],
+    mood,
+    authorName: TELEGRAM_NAME,
+    authorId: TELEGRAM_UID,
+    status: 'Pending',
+    date: new Date().toLocaleString('en-IN')
+  };
+
+  if (window.fbDb && window.firebaseReady) {
+    const subRef = window.dbRef(window.fbDb, 'gamerush_submissions/' + subId);
+    window.dbSet(subRef, submissionData);
+  }
+
+  closeModal();
+  SoundFX.cashout();
+  modal('✅ Idea Submitted!', `
+    <div style="text-align:center;padding:10px">
+      <div style="font-size:38px">🎉</div>
+      <h3 style="margin:8px 0;color:var(--green)">Submission Received!</h3>
+      <p style="color:#cbd5e1;font-size:12px">
+        Admin check karke approve karega. Shukriya!
+      </p>
+    </div>
+  `, `<button class="btn green" onclick="closeModal()">Great!</button>`);
+}
+
+/* =====================================================================
+   ADMIN PANEL
+   ===================================================================== */
+function openAdminPinModal() {
+  SoundFX.tap();
+  modal('👑 Master Admin Access', `
+    <div>
+      <p style="font-size:12px;color:var(--muted)">Enter Admin PIN to open Control Suite:</p>
+      <input type="password" id="adminPinInput" placeholder="Enter PIN (Default: 778899)" style="text-align:center;font-size:16px;letter-spacing:4px">
+    </div>
+  `, `
+    <button class="btn secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn gold" onclick="verifyAdminPin()">Access Panel ➔</button>
+  `);
+}
+
+function verifyAdminPin() {
+  const pin = document.getElementById('adminPinInput').value.trim();
+  if (pin === ADMIN_SECRET_PIN) {
+    closeModal();
+    SoundFX.cashout();
+    openAdminDashboard();
+  } else {
+    SoundFX.wrong();
+    showToast('❌ Wrong Admin PIN!');
+  }
+}
+
+function openAdminDashboard() {
+  modal('👑 Game Rush Master Admin', `
+    <div>
+      <div class="adminTabRow">
+        <button class="adminTabBtn active" id="atab_subs" onclick="switchAdminTab('subs')">📬 Submissions</button>
+        <button class="adminTabBtn" id="atab_popup" onclick="switchAdminTab('popup')">📢 Popup Alert</button>
+        <button class="adminTabBtn" id="atab_wds" onclick="switchAdminTab('wds')">💸 Withdrawals</button>
+        <button class="adminTabBtn" id="atab_add" onclick="switchAdminTab('add')">➕ Add Level</button>
+      </div>
+
+      <div id="adminTabContent" style="min-height:220px">
+        <div style="text-align:center;padding:25px;color:var(--muted)">Loading Admin Data...</div>
+      </div>
+    </div>
+  `, `<button class="btn secondary" onclick="closeModal()">Close Admin</button>`);
+
+  loadAdminSubmissions();
+}
+
+function switchAdminTab(tab) {
+  SoundFX.tap();
+  document.querySelectorAll('.adminTabBtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('atab_' + tab).classList.add('active');
+
+  if (tab === 'subs') loadAdminSubmissions();
+  if (tab === 'popup') loadAdminPopupManager();
+  if (tab === 'wds') loadAdminWithdrawals();
+  if (tab === 'add') loadAdminAddLevel();
+}
+
+function loadAdminSubmissions() {
+  const c = document.getElementById('adminTabContent');
+  if (!window.fbDb) { c.innerHTML = 'Database not connected'; return; }
+  const sRef = window.dbRef(window.fbDb, 'gamerush_submissions');
+
+  window.dbGet(sRef).then(snap => {
+    if (!snap.exists()) {
+      c.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">No pending level submissions!</div>';
+      return;
+    }
+    const data = snap.val();
+    let html = '<div style="display:grid;gap:10px">';
+    Object.keys(data).forEach(k => {
+      const item = data[k];
+      if (item.status === 'Pending') {
+        html += `
+          <div style="background:#09101d;border:1px solid var(--border);border-radius:14px;padding:12px">
+            <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--cyan)">
+              <span>By: ${item.authorName} (${item.authorId})</span>
+              <span>${item.mood}</span>
+            </div>
+            <div style="font-size:13px;font-weight:750;margin:6px 0;color:#fff">${item.q}</div>
+            <div style="font-size:11px;color:var(--green)"><b>Correct:</b> ${item.ansText}</div>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="btn small green" onclick="approveSubmission('${k}')">✅ Approve & Add</button>
+              <button class="btn small danger" onclick="rejectSubmission('${k}')">❌ Reject</button>
+            </div>
+          </div>
+        `;
+      }
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  });
+}
+
+function approveSubmission(subId) {
+  SoundFX.tap();
+  const subRef = window.dbRef(window.fbDb, 'gamerush_submissions/' + subId);
+  window.dbGet(subRef).then(snap => {
+    if (snap.exists()) {
+      const item = snap.val();
+      questionsPool.push({
+        q: item.q,
+        opts: item.opts,
+        ansText: item.ansText,
+        mood: item.mood
+      });
+      const qRef = window.dbRef(window.fbDb, 'gamerush_questions');
+      window.dbSet(qRef, questionsPool);
+      window.dbUpdate(subRef, { status: 'Approved' });
+      showToast('✅ Level Approved & Live!');
+      loadAdminSubmissions();
+      renderLevels();
+    }
+  });
+}
+
+function rejectSubmission(subId) {
+  SoundFX.wrong();
+  const subRef = window.dbRef(window.fbDb, 'gamerush_submissions/' + subId);
+  window.dbUpdate(subRef, { status: 'Rejected' });
+  showToast('❌ Submission Rejected');
+  loadAdminSubmissions();
+}
+
+function loadAdminPopupManager() {
+  const c = document.getElementById('adminTabContent');
+  if (!window.fbDb) return;
+  const popRef = window.dbRef(window.fbDb, 'gamerush_popup');
+  window.dbGet(popRef).then(snap => {
+    const cur = snap.exists() ? snap.val() : { active: false, title: '', msg: '' };
+    c.innerHTML = `
+      <div style="background:#09101d;border:1px solid var(--border);border-radius:14px;padding:14px">
+        <b style="font-size:13px;display:block;margin-bottom:8px">📢 Broadcast Live Popup</b>
+        <div class="inputGroup"><label>Popup Title</label><input id="adPopTitle" value="${cur.title || '🎉 Special Announcement'}" placeholder="Title"></div>
+        <div class="inputGroup"><label>Popup Message</label><textarea id="adPopMsg" rows="3" placeholder="Message to all users...">${cur.msg || ''}</textarea></div>
+        <div class="inputGroup" style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
+          <label style="margin:0">Active Status</label>
+          <select id="adPopActive" style="width:120px">
+            <option value="true" ${cur.active ? 'selected' : ''}>🟢 ACTIVE</option>
+            <option value="false" ${!cur.active ? 'selected' : ''}>🔴 OFF</option>
+          </select>
+        </div>
+        <button class="btn green" style="margin-top:16px" onclick="saveAdminPopup()">Save & Broadcast Live ➔</button>
+      </div>
+    `;
+  });
+}
+
+function saveAdminPopup() {
+  SoundFX.cashout();
+  const title = document.getElementById('adPopTitle').value.trim();
+  const msg = document.getElementById('adPopMsg').value.trim();
+  const active = document.getElementById('adPopActive').value === 'true';
+
+  const popRef = window.dbRef(window.fbDb, 'gamerush_popup');
+  window.dbSet(popRef, { title, msg, active, timestamp: Date.now() });
+  showToast('📢 Live Popup Updated!');
+}
+
+function loadAdminWithdrawals() {
+  const c = document.getElementById('adminTabContent');
+  if (!window.fbDb) return;
+  const wdRef = window.dbRef(window.fbDb, 'gamerush_withdrawals');
+  window.dbGet(wdRef).then(snap => {
+    if (!snap.exists()) {
+      c.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">No withdrawals found!</div>';
+      return;
+    }
+    const data = snap.val();
+    let html = '<div style="display:grid;gap:9px">';
+    Object.keys(data).forEach(k => {
+      const w = data[k];
+      html += `
+        <div style="background:#09101d;border:1px solid var(--border);border-radius:12px;padding:11px;font-size:12px">
+          <div style="display:flex;justify-content:space-between">
+            <b>${fmt(w.coins)} Coins</b>
+            <span class="statusBadge ${w.status}">${w.status}</span>
+          </div>
+          <small style="color:var(--muted);display:block;margin:3px 0">Android UID: ${w.appUid} • TG: ${w.telegramUid || 'N/A'}</small>
+          ${w.status === 'Pending' ? `
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button class="btn small green" onclick="setWdStatus('${k}', 'Approved')">Approve Payout</button>
+              <button class="btn small danger" onclick="setWdStatus('${k}', 'Rejected')">Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  });
+}
+
+function setWdStatus(reqId, status) {
+  SoundFX.tap();
+  const rRef = window.dbRef(window.fbDb, 'gamerush_withdrawals/' + reqId);
+  window.dbUpdate(rRef, { status });
+  showToast('Payout ' + status);
+  loadAdminWithdrawals();
+}
+
+function loadAdminAddLevel() {
+  const c = document.getElementById('adminTabContent');
+  c.innerHTML = `
+    <div style="background:#09101d;border:1px solid var(--border);border-radius:14px;padding:12px">
+      <b style="font-size:13px;display:block;margin-bottom:8px">➕ Add Live Question Directly</b>
+      <div class="inputGroup"><label>Question</label><input id="adQ" placeholder="Enter question"></div>
+      <div class="inputGroup"><label>Option 1</label><input id="adO1" placeholder="Option 1"></div>
+      <div class="inputGroup"><label>Option 2</label><input id="adO2" placeholder="Option 2"></div>
+      <div class="inputGroup"><label>Option 3</label><input id="adO3" placeholder="Option 3"></div>
+      <div class="inputGroup"><label>Option 4</label><input id="adO4" placeholder="Option 4"></div>
+      <div class="inputGroup">
+        <label>Correct Answer (1 to 4)</label>
+        <select id="adCorrect"><option value="1">Option 1</option><option value="2">Option 2</option><option value="3">Option 3</option><option value="4">Option 4</option></select>
+      </div>
+      <button class="btn gold" style="margin-top:14px" onclick="directAddLevel()">Add to Live Levels ➔</button>
+    </div>
+  `;
+}
+
+function directAddLevel() {
+  const q = document.getElementById('adQ').value.trim();
+  const o1 = document.getElementById('adO1').value.trim();
+  const o2 = document.getElementById('adO2').value.trim();
+  const o3 = document.getElementById('adO3').value.trim();
+  const o4 = document.getElementById('adO4').value.trim();
+  const c = parseInt(document.getElementById('adCorrect').value);
+
+  if (!q || !o1 || !o2 || !o3 || !o4) {
+    showToast('⚠️ Fill all fields');
+    return;
+  }
+  const opts = [o1, o2, o3, o4];
+  questionsPool.push({
+    q,
+    opts,
+    ansText: opts[c - 1],
+    mood: "👑 Admin Level"
+  });
+
+  const qRef = window.dbRef(window.fbDb, 'gamerush_questions');
+  window.dbSet(qRef, questionsPool);
+
+  showToast('✅ Level Added Directly!');
+  renderLevels();
+  loadAdminAddLevel();
+}
+
+/* =====================================================================
+   WITHDRAWAL ENGINE
+   ===================================================================== */
+function renderWallet() {
+  document.getElementById('wdAvailableCoins').innerHTML = fmt(state.coins) + ' <span>COINS</span>';
+  const uidField = document.getElementById('appUidInput');
+  if (state.appUid && !uidField.value) {
+    uidField.value = state.appUid;
+  }
+  renderHistory();
+}
+
+function setCoinWd(val) { SoundFX.tap(); document.getElementById('amountInput').value = val; }
+function setMaxWd() { SoundFX.tap(); document.getElementById('amountInput').value = state.coins; }
+
+function submitWithdrawal() {
+  SoundFX.tap();
+  const uid = document.getElementById('appUidInput').value.trim();
+  const coins = Number(document.getElementById('amountInput').value || 0);
+
+  if (!uid || uid.length < 3) {
+    SoundFX.wrong();
+    showToast('⚠️ Apna Mine Rush Android App UID dalein!');
+    return;
+  }
+  if (coins < 5000) {
+    SoundFX.wrong();
+    showToast('⚠️ Minimum withdrawal 5,000 Coins hai!');
+    return;
+  }
+  if (coins > state.coins) {
+    SoundFX.wrong();
+    showToast('❌ Balance me itne coins nahi hain!');
+    return;
+  }
+
+  modal('Confirm Withdrawal', `
+    <div style="padding:4px">
+      <div style="background:#090f1d;border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:12px">
+        <div style="font-size:10.5px;color:var(--muted)">MINE RUSH ANDROID APP UID</div>
+        <b style="color:var(--cyan);font-size:14px">${uid}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="color:var(--muted)">Coins Payout:</span>
+        <b style="color:var(--gold)">${fmt(coins)} Coins</b>
+      </div>
+      <p style="margin:12px 0 0;font-size:11px;color:var(--muted);line-height:1.4">
+        Ye request Firebase Realtime Database (gamerush_withdrawals) me submit hogi.
+      </p>
+    </div>
+  `, `
+    <button class="btn secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn green" onclick="processWithdrawal('${uid}', ${coins})">Confirm</button>
+  `);
+}
+
+function processWithdrawal(androidUid, amount) {
+  state.coins -= amount;
+  state.todayWithdrawn += amount;
+  state.totalWithdrawn += amount;
+  state.appUid = androidUid;
+  localStorage.setItem('minerush_android_uid', androidUid);
+
+  const reqId = 'WD-' + Date.now().toString().slice(-8);
+  const record = {
+    id: reqId,
+    appUid: androidUid,
+    coins: amount,
+    status: 'Pending',
+    date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }),
+    timestamp: Date.now(),
+    telegramUid: TELEGRAM_UID
+  };
+
+  state.withdrawals.unshift(record);
+  saveLocal();
+
+  if (window.fbDb && window.firebaseReady) {
+    try {
+      const wdRef = window.dbRef(window.fbDb, 'gamerush_withdrawals/' + reqId);
+      window.dbSet(wdRef, record);
+    } catch(e){}
+  }
+
+  closeModal();
+  SoundFX.cashout();
+  document.getElementById('amountInput').value = '';
+  renderWallet();
+  renderHome();
+  showToast('✅ Withdrawal request Firebase me submit ho gayi!');
+}
+
+function renderHistory() {
+  const box = document.getElementById('historyBox');
+  const countSpan = document.getElementById('historyCounter');
+  box.innerHTML = '';
+  countSpan.textContent = state.withdrawals.length + ' records';
+
+  if (!state.withdrawals.length) {
+    box.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:11.5px">No withdrawal requests yet.</div>';
+    return;
+  }
+
+  state.withdrawals.forEach(w => {
+    const item = document.createElement('div');
+    item.className = 'historyCard';
+    item.innerHTML = `
+      <div>
+        <b>${fmt(w.coins)} Coins</b>
+        <small>Android UID: ${w.appUid} • ${w.date}</small>
+      </div>
+      <span class="statusBadge ${w.status}">${w.status}</span>
+    `;
+    box.appendChild(item);
+  });
+}
+
+/* =====================================================================
+   PROFILE, NAVIGATION & GLOBAL
+   ===================================================================== */
+function go(screenId) {
+  SoundFX.tap();
+  SoundFX.stopKBCSuspense();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.nav').forEach(n => n.classList.toggle('active', n.dataset.target === screenId));
+
+  if (screenId === 'home') renderHome();
+  if (screenId === 'games') { renderLevels(); updateMinesBalanceDisplay(); }
+  if (screenId === 'wallet') renderWallet();
+  if (screenId === 'profile') renderProfile();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderHome() {
+  document.getElementById('homeTotalCoins').innerHTML = fmt(state.coins) + ' <span>COINS</span>';
+  document.getElementById('homeTodayEarned').textContent = fmt(state.todayEarned);
+  document.getElementById('homeTodayWithdrawn').textContent = fmt(state.todayWithdrawn);
+  document.getElementById('homeTotalWithdrawn').textContent = fmt(state.totalWithdrawn);
+  document.getElementById('homeLevelUnlocked').textContent = 'Stage ' + Math.min(30, state.unlockedLevel) + ' / 30';
+  document.getElementById('userTelegramIdBadge').textContent = 'TG: ' + TELEGRAM_UID;
+}
+
+function renderProfile() {
+  document.getElementById('profName').textContent = TELEGRAM_NAME;
+  document.getElementById('profAvatar').textContent = (TELEGRAM_NAME[0] || 'G').toUpperCase();
+  document.getElementById('profUsername').textContent = TELEGRAM_USERNAME;
+  document.getElementById('profTgId').textContent = 'TELEGRAM UID: ' + TELEGRAM_UID;
+  updateSoundUI();
+}
+
+function toggleSound() {
+  state.sound = !state.sound;
+  saveLocal();
+  updateSoundUI();
+  if (state.sound) SoundFX.tap();
+  else SoundFX.stopKBCSuspense();
+  showToast(state.sound ? '🔊 Audio Effects On' : '🔇 Audio Muted');
+}
+
+function updateSoundUI() {
+  const btn1 = document.getElementById('soundToggleBtn');
+  const btn2 = document.getElementById('soundSettingBtn');
+  if (btn1) btn1.textContent = state.sound ? '🔊' : '🔇';
+  if (btn2) {
+    btn2.textContent = state.sound ? 'ENABLED' : 'MUTED';
+    btn2.style.color = state.sound ? 'var(--green)' : 'var(--muted)';
+  }
+}
+
+/* Initial Setup */
+renderHome();
+renderLevels();
+initMinesGrid();
+updateSoundUI();
+updateMinesBalanceDisplay();
+</script>
+</body>
+</html>
